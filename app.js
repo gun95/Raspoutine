@@ -64,6 +64,7 @@ function findCmd(message) {
     {
         numberConnectUser = parseInt(tmp[2]);
         response = "numberConnectUser set to "  + numberConnectUser;
+        kibana.postNbConnect(numberConnectUser);
     }
     else
         response = message;
@@ -98,9 +99,8 @@ console.log();
 
 
 function intervalFunc() {
-    console.log('Cant stop me now!');
-    kibana.postNbConnect(numberConnectUser++);
-
+    console.log('numberConnectUser = ' + numberConnectUser);
+    kibana.postNbConnect(numberConnectUser);
 }
 
 kibana.putMapping();

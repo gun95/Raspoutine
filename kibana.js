@@ -1,7 +1,7 @@
 var request = require('request');
 
 
-let url = "http://localhost:9200/";
+let url = "";
 
 let postNbConnect = function (numberConnectUser) {
 
@@ -16,8 +16,6 @@ let postNbConnect = function (numberConnectUser) {
         document,
         function (error, response, body) {
                 console.log(body)
-            console.log(document)
-
         }
 
     );
@@ -34,12 +32,10 @@ let postLastConnect = function (userName, channel, action) {
         }
     };
     request.post(
-        url + "nbconnect/doc",
+        url + "user/doc",
         document,
         function (error, response, body) {
             console.log(body)
-            console.log(document)
-
         }
 
     );
