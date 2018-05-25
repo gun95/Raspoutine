@@ -43,22 +43,34 @@ app.use(function (err, req, res, next) {
 const Discord = require('discord.js');
 const client = new Discord.Client();
 const botPrefix = '!r';
+let numberConnectUser = 0;
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
 
+
 client.on('message', message => {
-    if (message.content === 'ping') {
-        msg.reply('Pong!');
-    }
+
     if (message.content.startsWith(botPrefix)) {
-        message.reply("yo");
+        message.reply(findCmd(message.content));
     }
 });
 
+function findCmd(message) {
+    let tmp = message.split(" ")
+    let response;
+    if (tmp[1] === "setnb")
+    {
+        numberConnectUser = parseInt(tmp[2]);
+        response = "numberConnectUser set to "  + numberConnectUser;
+    }
+    else
+        response = message;
+    return response;
+}
 
-let numberConnectUser = 0;
+
 
 client.on('voiceStateUpdate', (oldMember, newMember) => {
     let newUserChannel = newMember.voiceChannel
@@ -69,15 +81,15 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
     if (oldUserChannel === undefined && newUserChannel !== undefined) {
 
         // User Joins a voice channel
-        console.log(newMember.nickname);
-        console.log(newUserChannel.name);
+        console.log(newMember.nickname + " join " + newUserChannel.name);
         numberConnectUser++;
-        getTime();
+        kibana.postLastConnect(newMember.nickname, newUserChannel.name, "join");
     } else if (newUserChannel === undefined) {
         // User leaves a voice channel
-        console.log(oldUserChannel.name);
-        console.log(oldMember.nickname);
+
+        console.log(oldMember.nickname + " leave " + oldUserChannel.name);
         numberConnectUser--;
+        kibana.postLastConnect(oldMember.nickname, oldUserChannel.name, "leave");
     }
 
 })
@@ -87,15 +99,12 @@ console.log();
 
 function intervalFunc() {
     console.log('Cant stop me now!');
-
-
-
-    kibana.postDocument(numberConnectUser++);
+    kibana.postNbConnect(numberConnectUser++);
 
 }
 
-//kibana.putMapping();
-setInterval(intervalFunc, 10 * 1000);
+kibana.putMapping();
+setInterval(intervalFunc, 300 * 1000);
 
 
 client.login(process.env.token);
