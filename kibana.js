@@ -1,7 +1,7 @@
 var request = require('request');
 
 
-let url = "";
+let url = process.env.url;
 
 let postNbConnect = function (numberConnectUser) {
 

@@ -63,10 +63,14 @@ function findCmd(message) {
     if (tmp[1] === "setnb")
     {
         numberConnectUser = parseInt(tmp[2]);
-        response = "numberConnectUser set to "  + numberConnectUser;
+        response = "NumberConnectUser set to "  + numberConnectUser;
         kibana.postNbConnect(numberConnectUser);
     }
-    else
+    else if  (tmp[1] === "setmapping")
+    {
+        kibana.putMapping();
+        response = "Mapping done";
+    }else
         response = message;
     return response;
 }
@@ -82,9 +86,9 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
     if (oldUserChannel === undefined && newUserChannel !== undefined) {
 
         // User Joins a voice channel
-        console.log(newMember.nickname + " join " + newUserChannel.name);
+        console.log(newMember.displayName  + " join " + newUserChannel.name);
         numberConnectUser++;
-        kibana.postLastConnect(newMember.nickname, newUserChannel.name, "join");
+        kibana.postLastConnect(newMember.displayName, newUserChannel.name, "join");
     } else if (newUserChannel === undefined) {
         // User leaves a voice channel
 
@@ -103,9 +107,7 @@ function intervalFunc() {
     kibana.postNbConnect(numberConnectUser);
 }
 
-kibana.putMapping();
 setInterval(intervalFunc, 300 * 1000);
-
 
 client.login(process.env.token);
 module.exports = app;
