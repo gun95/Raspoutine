@@ -70,7 +70,9 @@ function findCmd(message) {
     {
         kibana.putMapping();
         response = "Mapping done";
-    }else
+    }else if (tmp[1] === "user")
+        countUser();
+    else
         response = message;
     return response;
 }
@@ -92,19 +94,21 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
     }
 });
 
-function intervalFunc() {
+let countUser = function () {
     numberConnectUser = 0;
     client.channels.forEach(function (value, key, map) {
         if (client.channels.get(key).type === "voice")
             numberConnectUser += client.channels.get(key).members.size
     });
     console.log('numberConnectUser = ' + numberConnectUser);
+};
+
+function intervalFunc() {
+    countUser();
     kibana.postNbConnect(numberConnectUser);
 }
 
 setInterval(intervalFunc, 300 * 1000);
-
-
 client.login(process.env.token);
 
 module.exports = app;
