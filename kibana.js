@@ -70,7 +70,7 @@ let user = {
                             "type": "date",
                             "format": "yyyy-MM-dd HH:mm:ss"
                         },
-                        "nbConnected": {
+                        "userName": {
                             "type": "keyword"
                         },
                         "channel": {

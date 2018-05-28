@@ -75,39 +75,36 @@ function findCmd(message) {
     return response;
 }
 
-
-
 client.on('voiceStateUpdate', (oldMember, newMember) => {
     let newUserChannel = newMember.voiceChannel
     let oldUserChannel = oldMember.voiceChannel
 
     console.log("--------------------------------------");
-
+   // console.log(client.channels.get("221345549578797057").members.get('178421128149073920').user.username);
     if (oldUserChannel === undefined && newUserChannel !== undefined) {
-
         // User Joins a voice channel
         console.log(newMember.displayName  + " join " + newUserChannel.name);
-        numberConnectUser++;
         kibana.postLastConnect(newMember.displayName, newUserChannel.name, "join");
     } else if (newUserChannel === undefined) {
         // User leaves a voice channel
-
-        console.log(oldMember.nickname + " leave " + oldUserChannel.name);
-        numberConnectUser--;
+        console.log(oldMember.displayName + " leave " + oldUserChannel.name);
         kibana.postLastConnect(oldMember.nickname, oldUserChannel.name, "leave");
     }
-
-})
-
-console.log();
-
+});
 
 function intervalFunc() {
+    numberConnectUser = 0;
+    client.channels.forEach(function (value, key, map) {
+        if (client.channels.get(key).type === "voice")
+            numberConnectUser += client.channels.get(key).members.size
+    });
     console.log('numberConnectUser = ' + numberConnectUser);
     kibana.postNbConnect(numberConnectUser);
 }
 
 setInterval(intervalFunc, 300 * 1000);
 
+
 client.login(process.env.token);
+
 module.exports = app;
