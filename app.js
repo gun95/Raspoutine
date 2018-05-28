@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-var kibana = require("./kibana.js");
+let kibana = require("./kibana.js");
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -58,7 +58,7 @@ client.on('message', message => {
 });
 
 function findCmd(message) {
-    let tmp = message.split(" ")
+    let tmp = message.split(" ");
     let response;
     if (tmp[1] === "setnb")
     {
@@ -70,16 +70,18 @@ function findCmd(message) {
     {
         kibana.putMapping();
         response = "Mapping done";
-    }else if (tmp[1] === "user")
+    }else if (tmp[1] === "user") {
         countUser();
+        response = numberConnectUser.toString();
+    }
     else
         response = message;
     return response;
 }
 
 client.on('voiceStateUpdate', (oldMember, newMember) => {
-    let newUserChannel = newMember.voiceChannel
-    let oldUserChannel = oldMember.voiceChannel
+    let newUserChannel = newMember.voiceChannel;
+    let oldUserChannel = oldMember.voiceChannel;
 
     console.log("--------------------------------------");
    // console.log(client.channels.get("221345549578797057").members.get('178421128149073920').user.username);
