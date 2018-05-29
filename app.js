@@ -42,7 +42,7 @@ app.use(function (err, req, res, next) {
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const botPrefix = '!r';
+const botPrefix = '$r';
 let numberConnectUser = 0;
 
 client.on('ready', () => {
