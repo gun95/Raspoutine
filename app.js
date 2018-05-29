@@ -84,7 +84,10 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
     let oldUserChannel = oldMember.voiceChannel;
 
     console.log("--------------------------------------");
-   // console.log(client.channels.get("221345549578797057").members.get('178421128149073920').user.username);
+    console.log(newMember.displayName);
+
+
+    // console.log(client.channels.get("221345549578797057").members.get('178421128149073920').user.username);
     if (oldUserChannel === undefined && newUserChannel !== undefined) {
         // User Joins a voice channel
         console.log(newMember.displayName  + " join " + newUserChannel.name);
@@ -92,7 +95,7 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
     } else if (newUserChannel === undefined) {
         // User leaves a voice channel
         console.log(oldMember.displayName + " leave " + oldUserChannel.name);
-        kibana.postLastConnect(oldMember.nickname, oldUserChannel.name, "leave");
+        kibana.postLastConnect(oldMember.displayName, oldUserChannel.name, "leave");
     }
 });
 
