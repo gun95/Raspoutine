@@ -108,47 +108,48 @@ let getActivityByCharactere = function (membershipId, characterIds, callback) {
                 console.log(body);
 
                 let json = JSON.parse(body);
-
-                json.Response.activities.filter(function (item) {
-                    //count for LEVIATHAN
-                    for (let i = 0; i < LEVIATHAN.versions.length; i++) {
-                        for (let y = 0; y < LEVIATHAN.versions[i].activityHashes.length; y++) {
-                            if (item.activityDetails.referenceId === LEVIATHAN.versions[i].activityHashes[y] && item.values.completed.basic.value === 1) {
-                                if (i === 0)
-                                    levPrestige++;
-                                else
-                                    levNormal++;
+                if(json.Response.length !== 0) {
+                    json.Response.activities.filter(function (item) {
+                        //count for LEVIATHAN
+                        for (let i = 0; i < LEVIATHAN.versions.length; i++) {
+                            for (let y = 0; y < LEVIATHAN.versions[i].activityHashes.length; y++) {
+                                if (item.activityDetails.referenceId === LEVIATHAN.versions[i].activityHashes[y] && item.values.completed.basic.value === 1) {
+                                    if (i === 0)
+                                        levPrestige++;
+                                    else
+                                        levNormal++;
+                                }
                             }
                         }
-                    }
 
-                    //count for EATER_OF_WORLDS
-                    for (let i = 0; i < EATER_OF_WORLDS.versions.length; i++) {
-                        for (let y = 0; y < EATER_OF_WORLDS.versions[i].activityHashes.length; y++) {
-                            if (item.activityDetails.referenceId === EATER_OF_WORLDS.versions[i].activityHashes[y] && item.values.completed.basic.value === 1) {
-                                if (i === 0)
-                                    eatPrestige++;
-                                else
-                                    eatNormal++;
+                        //count for EATER_OF_WORLDS
+                        for (let i = 0; i < EATER_OF_WORLDS.versions.length; i++) {
+                            for (let y = 0; y < EATER_OF_WORLDS.versions[i].activityHashes.length; y++) {
+                                if (item.activityDetails.referenceId === EATER_OF_WORLDS.versions[i].activityHashes[y] && item.values.completed.basic.value === 1) {
+                                    if (i === 0)
+                                        eatPrestige++;
+                                    else
+                                        eatNormal++;
+                                }
                             }
                         }
-                    }
 
-                    //count for SPIRE_OF_STARS
-                    for (let i = 0; i < SPIRE_OF_STARS.versions.length; i++) {
-                        for (let y = 0; y < SPIRE_OF_STARS.versions[i].activityHashes.length; y++) {
-                            if (item.activityDetails.referenceId === SPIRE_OF_STARS.versions[i].activityHashes[y] && item.values.completed.basic.value === 1) {
-                                if (i === 0)
-                                    spiPrestige++;
-                                else
-                                    spiNormal++;
+                        //count for SPIRE_OF_STARS
+                        for (let i = 0; i < SPIRE_OF_STARS.versions.length; i++) {
+                            for (let y = 0; y < SPIRE_OF_STARS.versions[i].activityHashes.length; y++) {
+                                if (item.activityDetails.referenceId === SPIRE_OF_STARS.versions[i].activityHashes[y] && item.values.completed.basic.value === 1) {
+                                    if (i === 0)
+                                        spiPrestige++;
+                                    else
+                                        spiNormal++;
+                                }
                             }
                         }
-                    }
-                });
-                //console.log("lev prestige = " + levPrestige + " lev normal " + levNormal);
-                //console.log("eat prestige = " + eatPrestige + " eat normal " + eatNormal);
-                //console.log("spi prestige = " + spiPrestige + " spi normal " + spiNormal);
+                    });
+                }
+                console.log("lev prestige = " + levPrestige + " lev normal " + levNormal);
+                console.log("eat prestige = " + eatPrestige + " eat normal " + eatNormal);
+                console.log("spi prestige = " + spiPrestige + " spi normal " + spiNormal);
 
             }).then(function () {
                 if (i === 0)

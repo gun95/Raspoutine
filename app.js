@@ -91,8 +91,8 @@ function findCmd(content, message) {
         countUser();
         response = numberConnectUser.toString();
     } else if (tmp[0] === "rank" && tmp.length === 2 && tmp[1] !== null) {
-        let userName = tmp[1].splice(tmp[1].search('@') + 1, 0, "23");
-        userName = userName.replace("@", "%");
+        let userName = tmp[1].splice(tmp[1].search('#') + 1, 0, "23");
+        userName = userName.replace("#", "%");
         console.log("result = " + userName);
         response = "Searching";
         //search user by name
@@ -116,7 +116,7 @@ function findCmd(content, message) {
         if (tmp.length === 2 && tmp[1] === "fr")
             response = "\n" +
                 "Ma surveillance s'étendra jusqu'aux limites de ce systeme et au-delà.Plus aucune menace ne pourra nous échapper\n" +
-                "A partir de maintenant, je défendrai l'Humanité à ma façon. JE SUIS RASPOUTINE,Gardien de tous ceux que j'observe. je suis sans égale." +
+                "A partir de maintenant, je défendrai l'Humanité à ma façon. JE SUIS RASPOUTINE,Gardien de tous ceux que j'observe. je suis sans égale.\n" +
                 "Mes Commandes : \n" +
                 "\trank MonBatlleTag: Défini vos rangs en fonction du nombre de raid que vous avez fini \n" +
                 "\thelp : Pour voir ça\n"
