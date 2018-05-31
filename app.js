@@ -97,16 +97,20 @@ function findCmd(content, message) {
         response = "Searching";
         //search user by name
         bungie.getSearchAcount(userName, function (searchAcount) {
-            response = "Player found = " + searchAcount.Response[0].displayName;
-            //get acount info
-            bungie.getAcount(searchAcount.Response[0].membershipId, function (acount) {
-                console.log(acount.Response.profile.data.characterIds[0]);
-                //get charactere activity
-                bungie.getActivityByCharactere(acount.Response.profile.data.userInfo.membershipId, acount.Response.profile.data.characterIds, function (raid) {
-                    message.reply(response + "\nLev Prestige : " + raid.levPrestige + "\nLev normal : " + raid.levNormal + "\nArgos : " + raid.eatNormal + "\nFleche : " + raid.spiNormal);
-                    setRole(message, raid);
+            if (searchAcount.Response.length !== 0) {
+                response = "Player found = " + searchAcount.Response[0].displayName;
+                //get acount info
+                bungie.getAcount(searchAcount.Response[0].membershipId, function (acount) {
+                    console.log(acount.Response.profile.data.characterIds[0]);
+                    //get charactere activity
+                    bungie.getActivityByCharactere(acount.Response.profile.data.userInfo.membershipId, acount.Response.profile.data.characterIds, function (raid) {
+                        message.reply(response + "\nLev Prestige : " + raid.levPrestige + "\nLev normal : " + raid.levNormal + "\nArgos : " + raid.eatNormal + "\nFleche : " + raid.spiNormal);
+                        setRole(message, raid);
+                    });
                 });
-            });
+            }
+            else
+                message.reply("Sorry no player found");
         });
     } else if (tmp[0] === "help") {
         if (tmp.length === 2 && tmp[1] === "fr")
