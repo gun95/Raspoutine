@@ -232,7 +232,8 @@ let nameRaid = ["LEVIATHAN Normal",
 
 let setRole = function (message, raid, bungieName) {
 
-    let y = 0;
+    let y = 0
+    responseRole = embed.getEmbed();
     responseRole.addField("Player Found", bungieName);
     for (let i = 0; i < nameRaid.length; i++) {
         findRole(message, raid[i], nameRaid[i], role[y], role[y + 1], role[y + 1]);
