@@ -54,7 +54,7 @@ let spiPrestige = 0;
 const url = "https://www.bungie.net/Platform/Destiny2/";
 let apiKey = process.env.bungie_key;
 
-let getSearchAcount = function (userName,callback) {
+let getSearchAcount = function (userName, callback) {
 
     let options = {
         url: url + "SearchDestinyPlayer/-1/" + userName + "/",
@@ -74,17 +74,17 @@ let getSearchAcount = function (userName,callback) {
 let getAcount = function (membershipId, callback) {
 
     let options = {
-        url: url + "4/Profile/"+ membershipId +"/?components=100",
+        url: url + "4/Profile/" + membershipId + "/?components=100",
         headers: {
             "X-API-Key": apiKey
         }
     };
-     levNormal = 0;
-     levPrestige = 0;
-     eatNormal = 0;
-     eatPrestige = 0;
-     spiNormal = 0;
-     spiPrestige = 0;
+    levNormal = 0;
+    levPrestige = 0;
+    eatNormal = 0;
+    eatPrestige = 0;
+    spiNormal = 0;
+    spiPrestige = 0;
     request(options, function (error, response, body) {
         console.log(body);
         let json = JSON.parse(body);
@@ -95,20 +95,21 @@ let getAcount = function (membershipId, callback) {
 
 let getActivityByCharactere = function (membershipId, characterIds, callback) {
 
-    for (let i = 0; i < characterIds.length; i++) {
-        let options = {
-            url: url + "4/Account/" + membershipId + "/Character/" + characterIds[i] + "/Stats/Activities/?page=0&mode=raid&count=250",
+    let i = 0;
+    Promise.all(characterIds.map(characterId => {
+        const options = {
+            url: url + "4/Account/" + membershipId + "/Character/" + characterIds[i++] + "/Stats/Activities/?page=0&mode=raid&count=250",
             headers: {
                 "X-API-Key": apiKey
             }
         };
-
-        rp(options)
-            .then(function (body) {
+        return rp(options);
+    }))
+        .then(bodies => {
+            bodies.map(body => {
                 console.log(body);
-
                 let json = JSON.parse(body);
-                if(json.Response.length !== 0) {
+                if (!isEmptyObject(json.Response)) {
                     json.Response.activities.filter(function (item) {
                         //count for LEVIATHAN
                         for (let i = 0; i < LEVIATHAN.versions.length; i++) {
@@ -147,34 +148,33 @@ let getActivityByCharactere = function (membershipId, characterIds, callback) {
                         }
                     });
                 }
-                console.log("lev prestige = " + levPrestige + " lev normal " + levNormal);
-                console.log("eat prestige = " + eatPrestige + " eat normal " + eatNormal);
-                console.log("spi prestige = " + spiPrestige + " spi normal " + spiNormal);
+               // console.log("lev prestige = " + levPrestige + " lev normal " + levNormal);
+                //console.log("eat prestige = " + eatPrestige + " eat normal " + eatNormal);
+                //console.log("spi prestige = " + spiPrestige + " spi normal " + spiNormal);
+            })
 
-            }).then(function () {
-                if (i === 0)
-                callback(getRaid());
+        }).then(function () {
+            callback(getRaid());
+    });
 
-        })
-            .catch(function (err) {
-                // API call failed...
-            });
-    }
 
 };
 
-
-
-let getRaid = function (){
-    let raid = {
-        levPrestige : levPrestige,
-        levNormal : levNormal,
-        eatPrestige : eatPrestige,
-        eatNormal : eatNormal,
-        spiPrestige : spiPrestige,
-        spiNormal : spiNormal,
-    };
+let getRaid = function () {
+    /*let raid = {
+        levPrestige: levPrestige,
+        levNormal: levNormal,
+        eatPrestige: eatPrestige,
+        eatNormal: eatNormal,
+        spiPrestige: spiPrestige,
+        spiNormal: spiNormal,
+    };*/
+    let raid = [levNormal, levPrestige, eatNormal, eatPrestige, spiNormal, spiPrestige];
     return raid;
+};
+
+function isEmptyObject(obj) {
+    return !Object.keys(obj).length;
 };
 
 module.exports.getActivityByCharactere = getActivityByCharactere;

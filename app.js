@@ -7,6 +7,9 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+const Discord = require('discord.js');
+
+
 var app = express();
 
 // view engine setup
@@ -24,6 +27,7 @@ app.use('/users', usersRouter);
 
 let kibana = require("./kibana.js");
 let bungie = require("./bungie.js");
+let embed = require("./embed.js");
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -41,7 +45,6 @@ app.use(function (err, req, res, next) {
     res.render('error');
 });
 
-const Discord = require('discord.js');
 const client = new Discord.Client();
 const botPrefix = '$';
 let numberConnectUser = 0;
@@ -94,23 +97,22 @@ function findCmd(content, message) {
         let userName = tmp[1].splice(tmp[1].search('#') + 1, 0, "23");
         userName = userName.replace("#", "%");
         console.log("result = " + userName);
-        response = "Searching";
+        response = "Searching...";
         //search user by name
         bungie.getSearchAcount(userName, function (searchAcount) {
             if (searchAcount.Response.length !== 0) {
-                response = "Player found = " + searchAcount.Response[0].displayName;
+                //response = "Player found = " + searchAcount.Response[0].displayName;
                 //get acount info
                 bungie.getAcount(searchAcount.Response[0].membershipId, function (acount) {
                     console.log(acount.Response.profile.data.characterIds[0]);
                     //get charactere activity
                     bungie.getActivityByCharactere(acount.Response.profile.data.userInfo.membershipId, acount.Response.profile.data.characterIds, function (raid) {
-                        message.reply(response + "\nLev Prestige : " + raid.levPrestige + "\nLev normal : " + raid.levNormal + "\nArgos : " + raid.eatNormal + "\nFleche : " + raid.spiNormal);
-                        setRole(message, raid);
+                        setRole(message, raid, searchAcount.Response[0].displayName);
                     });
                 });
             }
             else
-                message.reply("Sorry no player found");
+                message.channel.send(embed.getEmbed().setDescription("No Player Found"));
         });
     } else if (tmp[0] === "help") {
         if (tmp.length === 2 && tmp[1] === "fr")
@@ -132,7 +134,10 @@ function findCmd(content, message) {
     }
     else
         response = content;
-    message.reply(response);
+
+    message.channel.send(embed.getEmbed().addField(message.member.displayName, response));
+
+    //message.reply(response);
 }
 
 
@@ -185,166 +190,57 @@ let countUser = function () {
 //       15 <= lvl 2 < 30
 //       30 <= lvl 3
 
-let setRole = function (message, raid) {
+let responseRole = embed.getEmbed();
 
-    if (raid.spiPrestige >= 30) {
+let findRole = function (message, numberRaid, title, lvl1, lvl2, lvl3) {
+
+    if (numberRaid >= 30) {
         message.guild.roles.forEach(function (value, key, map) {
-            if (message.guild.roles.get(key).name === role[17]) {
-                console.log(message.guild.roles.get(key).id);
+            if (message.guild.roles.get(key).name === lvl3) {
                 message.member.addRole(message.guild.roles.get(key).id);
-                message.reply("New rank add : " + message.guild.roles.get(key).name);
+                responseRole.addField(title + " : " + numberRaid, message.guild.roles.get(key).name);
             }
         });
-    } else if (raid.spiPrestige >= 15 && raid.spiPrestige < 30) {
+    } else if (numberRaid >= 15 && numberRaid < 30) {
         message.guild.roles.forEach(function (value, key, map) {
-            if (message.guild.roles.get(key).name === role[16]) {
-                console.log(message.guild.roles.get(key).id);
+            if (message.guild.roles.get(key).name === lvl2) {
                 message.member.addRole(message.guild.roles.get(key).id);
-                message.reply("New rank add : " + message.guild.roles.get(key).name);
-            }
-        });
-    }
-    else if (raid.spiPrestige >= 5 && raid.spiPrestige < 15) {
-        message.guild.roles.forEach(function (value, key, map) {
-            if (message.guild.roles.get(key).name === role[15]) {
-                console.log(message.guild.roles.get(key).id);
-                message.member.addRole(message.guild.roles.get(key).id);
-                message.reply("New rank add : " + message.guild.roles.get(key).name);
+                responseRole.addField(title + " : " + numberRaid, message.guild.roles.get(key).name);
             }
         });
     }
-    if (raid.spiNormal >= 30) {
+    else if (numberRaid >= 5 && numberRaid < 15) {
         message.guild.roles.forEach(function (value, key, map) {
-            if (message.guild.roles.get(key).name === role[14]) {
-                console.log(message.guild.roles.get(key).id);
+            if (message.guild.roles.get(key).name === lvl1) {
                 message.member.addRole(message.guild.roles.get(key).id);
-                message.reply("New rank add : " + message.guild.roles.get(key).name);
+                responseRole.addField(title + " : " + numberRaid, message.guild.roles.get(key).name);
             }
         });
-    } else if (raid.spiNormal >= 15 && raid.spiNormal < 30) {
-        message.guild.roles.forEach(function (value, key, map) {
-            if (message.guild.roles.get(key).name === role[13]) {
-                console.log(message.guild.roles.get(key).id);
-                message.member.addRole(message.guild.roles.get(key).id);
-                message.reply("New rank add : " + message.guild.roles.get(key).name);
-            }
-        });
-    }
-    else if (raid.spiNormal >= 5 && raid.spiNormal < 15) {
-        message.guild.roles.forEach(function (value, key, map) {
-            if (message.guild.roles.get(key).name === role[12]) {
-                console.log(message.guild.roles.get(key).id);
-                message.member.addRole(message.guild.roles.get(key).id);
-                message.reply("New rank add : " + message.guild.roles.get(key).name);
-            }
-        });
+    } else
+        responseRole.addField(title + " : " + numberRaid, "None");
+
+
+};
+
+
+let nameRaid = ["LEVIATHAN Normal",
+    "LEVIATHAN Prestige",
+    "EATER OF WORLDS Normal",
+    "EATER OF WORLDS Prestige",
+    "SPIRE OF STARS Normal",
+    "SPIRE OF STARS Prestige"];
+
+let setRole = function (message, raid, bungieName) {
+
+    let y = 0;
+    responseRole.addField("Player Found", bungieName);
+    for (let i = 0; i < nameRaid.length; i++) {
+        findRole(message, raid[i], nameRaid[i], role[y], role[y + 1], role[y + 1]);
+        y += 3;
     }
 
-    if (raid.eatPrestige >= 30) {
-        message.guild.roles.forEach(function (value, key, map) {
-            if (message.guild.roles.get(key).name === role[11]) {
-                console.log(message.guild.roles.get(key).id);
-                message.member.addRole(message.guild.roles.get(key).id);
-                message.reply("New rank add : " + message.guild.roles.get(key).name);
-            }
-        });
-    } else if (raid.eatPrestige >= 15 && raid.eatPrestige < 30) {
-        message.guild.roles.forEach(function (value, key, map) {
-            if (message.guild.roles.get(key).name === role[10]) {
-                console.log(message.guild.roles.get(key).id);
-                message.member.addRole(message.guild.roles.get(key).id);
-                message.reply("New rank add : " + message.guild.roles.get(key).name);
-            }
-        });
-    }
-    else if (raid.eatPrestige >= 5 && raid.eatPrestige < 15) {
-        message.guild.roles.forEach(function (value, key, map) {
-            if (message.guild.roles.get(key).name === role[9]) {
-                console.log(message.guild.roles.get(key).id);
-                message.member.addRole(message.guild.roles.get(key).id);
-                message.reply("New rank add : " + message.guild.roles.get(key).name);
-            }
-        });
-    }
+    message.channel.send(responseRole);
 
-    if (raid.eatNormal >= 30) {
-        message.guild.roles.forEach(function (value, key, map) {
-            if (message.guild.roles.get(key).name === role[8]) {
-                console.log(message.guild.roles.get(key).id);
-                message.member.addRole(message.guild.roles.get(key).id);
-                message.reply("New rank add : " + message.guild.roles.get(key).name);
-            }
-        });
-    } else if (raid.eatNormal >= 15 && raid.eatNormal < 30) {
-        message.guild.roles.forEach(function (value, key, map) {
-            if (message.guild.roles.get(key).name === role[7]) {
-                console.log(message.guild.roles.get(key).id);
-                message.member.addRole(message.guild.roles.get(key).id);
-                message.reply("New rank add : " + message.guild.roles.get(key).name);
-            }
-        });
-    }
-    else if (raid.eatNormal >= 5 && raid.eatNormal < 15) {
-        message.guild.roles.forEach(function (value, key, map) {
-            if (message.guild.roles.get(key).name === role[6]) {
-                console.log(message.guild.roles.get(key).id);
-                message.member.addRole(message.guild.roles.get(key).id);
-                message.reply("New rank add : " + message.guild.roles.get(key).name);
-            }
-        });
-    }
-    if (raid.levPrestige >= 30) {
-        message.guild.roles.forEach(function (value, key, map) {
-            if (message.guild.roles.get(key).name === role[5]) {
-                console.log(message.guild.roles.get(key).id);
-                message.member.addRole(message.guild.roles.get(key).id);
-                message.reply("New rank add : " + message.guild.roles.get(key).name);
-            }
-        });
-    } else if (raid.levPrestige >= 15 && raid.levPrestige < 30) {
-        message.guild.roles.forEach(function (value, key, map) {
-            if (message.guild.roles.get(key).name === role[4]) {
-                console.log(message.guild.roles.get(key).id);
-                message.member.addRole(message.guild.roles.get(key).id);
-                message.reply("New rank add : " + message.guild.roles.get(key).name);
-            }
-        });
-    }
-    else if (raid.levPrestige >= 5 && raid.levPrestige < 15) {
-        message.guild.roles.forEach(function (value, key, map) {
-            if (message.guild.roles.get(key).name === role[3]) {
-                console.log(message.guild.roles.get(key).id);
-                message.member.addRole(message.guild.roles.get(key).id);
-                message.reply("New rank add : " + message.guild.roles.get(key).name);
-            }
-        });
-    }
-    if (raid.levNormal >= 30) {
-        message.guild.roles.forEach(function (value, key, map) {
-            if (message.guild.roles.get(key).name === role[2]) {
-                console.log(message.guild.roles.get(key).id);
-                message.member.addRole(message.guild.roles.get(key).id);
-                message.reply("New rank add : " + message.guild.roles.get(key).name);
-            }
-        });
-    } else if (raid.levNormal >= 15 && raid.levNormal < 30) {
-        message.guild.roles.forEach(function (value, key, map) {
-            if (message.guild.roles.get(key).name === role[1]) {
-                console.log(message.guild.roles.get(key).id);
-                message.member.addRole(message.guild.roles.get(key).id);
-                message.reply("New rank add : " + message.guild.roles.get(key).name);
-            }
-        });
-    }
-    else if (raid.levNormal >= 5 && raid.levNormal < 15) {
-        message.guild.roles.forEach(function (value, key, map) {
-            if (message.guild.roles.get(key).name === role[0]) {
-                console.log(message.guild.roles.get(key).id);
-                message.member.addRole(message.guild.roles.get(key).id);
-                message.reply("New rank add : " + message.guild.roles.get(key).name);
-            }
-        });
-    }
 };
 
 function intervalFunc() {
