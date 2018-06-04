@@ -136,10 +136,76 @@ function findCmd(content, message) {
         response = content;
 
     message.channel.send(embed.getEmbed().addField(message.member.displayName, response));
-
-    //message.reply(response);
 }
 
+
+client.on('messageDelete', message => {
+    let responseDelete = embed.getEmbed();
+
+    responseDelete.setAuthor("Delete");
+    responseDelete.addField("Author", message.member.displayName);
+    responseReactionAdd.addField("Channel", message.channel.name);
+    responseDelete.addField("Content", message.content);
+
+    let tmp = "";
+    message.reactions.forEach(function (value, key, map) {
+        let tmpEmot = key;
+        message.reactions.get(key).users.forEach(function (value, key, map) {
+            tmp += tmpEmot + " by " + value.username + "\n";
+        });
+    });
+
+    if (tmp !== "")
+        responseDelete.addField("reaction",tmp);
+    client.channels.get("453120747012096010").send(responseDelete);
+});
+
+
+
+client.on('messageReactionAdd', messageReaction => {
+
+    let responseReactionAdd = embed.getEmbed();
+    responseReactionAdd.setAuthor("Message Reaction Add");
+    responseReactionAdd.addField("Author", messageReaction.message.author.username);
+    responseReactionAdd.addField("Channel", messageReaction.message.channel.name);
+    responseReactionAdd.addField("Content", messageReaction.message.content);
+
+    let tmp = "";
+    messageReaction.message.reactions.forEach(function (value, key, map) {
+        let tmpEmot = key;
+        messageReaction.message.reactions.get(key).users.forEach(function (value, key, map) {
+            tmp += tmpEmot + " by " + value.username + "\n";
+        });
+    });
+    if (tmp !== "")
+        responseReactionAdd.addField("reaction",tmp);
+
+    client.channels.get("453120747012096010").send(responseReactionAdd);
+
+});
+
+
+client.on('messageReactionRemove', messageReaction => {
+
+    let responseReactionAdd = embed.getEmbed();
+    responseReactionAdd.setAuthor("Message Reaction Remove");
+    responseReactionAdd.addField("Author", messageReaction.message.author.username);
+    responseReactionAdd.addField("Channel", messageReaction.message.channel.name);
+    responseReactionAdd.addField("Content", messageReaction.message.content);
+
+    let tmp = "";
+    messageReaction.message.reactions.forEach(function (value, key, map) {
+        let tmpEmot = key;
+        messageReaction.message.reactions.get(key).users.forEach(function (value, key, map) {
+            tmp += tmpEmot + " by " + value.username + "\n";
+        });
+    });
+    if (tmp !== "")
+        responseReactionAdd.addField("reaction",tmp);
+
+    client.channels.get("453120747012096010").send(responseReactionAdd);
+
+});
 
 client.on('voiceStateUpdate', (oldMember, newMember) => {
     let newUserChannel = newMember.voiceChannel;
