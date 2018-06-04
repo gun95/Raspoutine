@@ -48,6 +48,7 @@ app.use(function (err, req, res, next) {
 const client = new Discord.Client();
 const botPrefix = '$';
 let numberConnectUser = 0;
+let channelIdForLog = null;
 
 let role = ["LevN LVL 1", "LevN LVL 2", "LevN LVL 3",
     "LevP LVL 1", "LevP LVL 2", "LevP LVL 3",
@@ -132,6 +133,11 @@ function findCmd(content, message) {
                 "\thelp : to see that\n"
 
     }
+    else if (tmp[0] === "setlog") {
+        console.log("log set in a channel #" + message.channel.name);
+        channelIdForLog = message.channel.id;
+        response = "log set in a channel #" + message.channel.name
+    }
     else
         response = content;
 
@@ -144,8 +150,9 @@ client.on('messageDelete', message => {
 
     responseDelete.setAuthor("Delete");
     responseDelete.addField("Author", message.member.displayName);
-    responseReactionAdd.addField("Channel", message.channel.name);
-    responseDelete.addField("Content", message.content);
+    responseDelete.addField("Channel", message.channel.name);
+    if (message.content !== "")
+        responseDelete.addField("Content", message.content);
 
     let tmp = "";
     message.reactions.forEach(function (value, key, map) {
@@ -156,10 +163,10 @@ client.on('messageDelete', message => {
     });
 
     if (tmp !== "")
-        responseDelete.addField("reaction",tmp);
-    client.channels.get("453120747012096010").send(responseDelete);
+        responseDelete.addField("reaction", tmp);
+    if (channelIdForLog !== null)
+        client.channels.get(channelIdForLog).send(responseDelete);
 });
-
 
 
 client.on('messageReactionAdd', messageReaction => {
@@ -168,7 +175,8 @@ client.on('messageReactionAdd', messageReaction => {
     responseReactionAdd.setAuthor("Message Reaction Add");
     responseReactionAdd.addField("Author", messageReaction.message.author.username);
     responseReactionAdd.addField("Channel", messageReaction.message.channel.name);
-    responseReactionAdd.addField("Content", messageReaction.message.content);
+    if (messageReaction.message.content !== "")
+        responseReactionAdd.addField("Content", messageReaction.message.content);
 
     let tmp = "";
     messageReaction.message.reactions.forEach(function (value, key, map) {
@@ -178,20 +186,20 @@ client.on('messageReactionAdd', messageReaction => {
         });
     });
     if (tmp !== "")
-        responseReactionAdd.addField("reaction",tmp);
-
-    client.channels.get("453120747012096010").send(responseReactionAdd);
-
+        responseReactionAdd.addField("reaction", tmp);
+    if (channelIdForLog !== null)
+        client.channels.get(channelIdForLog).send(responseReactionAdd);
 });
 
 
 client.on('messageReactionRemove', messageReaction => {
 
-    let responseReactionAdd = embed.getEmbed();
-    responseReactionAdd.setAuthor("Message Reaction Remove");
-    responseReactionAdd.addField("Author", messageReaction.message.author.username);
-    responseReactionAdd.addField("Channel", messageReaction.message.channel.name);
-    responseReactionAdd.addField("Content", messageReaction.message.content);
+    let messageReactionRemove = embed.getEmbed();
+    messageReactionRemove.setAuthor("Message Reaction Remove");
+    messageReactionRemove.addField("Author", messageReaction.message.author.username);
+    messageReactionRemove.addField("Channel", messageReaction.message.channel.name);
+    if (messageReaction.message.content !== "")
+        messageReactionRemove.addField("Content", messageReaction.message.content);
 
     let tmp = "";
     messageReaction.message.reactions.forEach(function (value, key, map) {
@@ -201,9 +209,10 @@ client.on('messageReactionRemove', messageReaction => {
         });
     });
     if (tmp !== "")
-        responseReactionAdd.addField("reaction",tmp);
+        messageReactionRemove.addField("reaction", tmp);
+    if (channelIdForLog !== null)
 
-    client.channels.get("453120747012096010").send(responseReactionAdd);
+        client.channels.get(channelIdForLog).send(messageReactionRemove);
 
 });
 
