@@ -116,22 +116,32 @@ function findCmd(content, message) {
                 message.channel.send(embed.getEmbed().setDescription("No Player Found"));
         });
     } else if (tmp[0] === "help") {
-        if (tmp.length === 2 && tmp[1] === "fr")
-            response = "\n" +
-                "Ma surveillance s'étendra jusqu'aux limites de ce systeme et au-delà.Plus aucune menace ne pourra nous échapper\n" +
-                "A partir de maintenant, je défendrai l'Humanité à ma façon. JE SUIS RASPOUTINE,Gardien de tous ceux que j'observe. je suis sans égale.\n" +
-                "Mes Commandes : \n" +
-                "\trank MonBatlleTag: Défini vos rangs en fonction du nombre de raid que vous avez fini \n" +
-                "\thelp : Pour voir ça\n"
-        else
-            response = "\n" +
-                "My sight will stretch to the edge of this system and beyond. Never again will a threat go unsee.\n" +
-                "From this day forward, i will defend Humanity on my onw terms.\n" +
-                "I AM RASPUTIN, Guardian of all i survey. I have no equal\n" +
-                "My Command : \n" +
-                "\trank yourBattleTag: set your raid rank depend on number of completion\n" +
-                "\thelp : to see that\n"
+        let embedResponse = embed.getEmbed();
+        if (tmp.length === 2 && tmp[1] === "fr") {
+            embedResponse.setAuthor(message.member.displayName);
+            embedResponse.setDescription("Ma surveillance s'étendra jusqu'aux limites de ce systeme et au-delà.Plus aucune menace ne pourra nous échapper\n" +
+                "A partir de maintenant, je défendrai l'Humanité à ma façon.\n" +
+                "JE SUIS RASPOUTINE,Gardien de tous ceux que j'observe. je suis sans égale.\n");
+            embedResponse.addField("Mes Commandes :",
+                "$rank <MonBatlleTag> : Défini vos rangs en fonction du nombre de raid que vous avez fini \n" +
+                "$help : Pour voir ça\n");
 
+            response="";
+             message.channel.send(embedResponse);
+        }
+        else
+        {
+            embedResponse.setAuthor(message.member.displayName);
+            embedResponse.setDescription("My sight will stretch to the edge of this system and beyond. Never again will a threat go unsee.\n" +
+                "From this day forward, i will defend Humanity on my onw terms.\n" +
+                "I AM RASPUTIN, Guardian of all i survey. I have no equal\n");
+            embedResponse.addField("My Command :",
+                "$rank <yourBattleTag> : set your raid rank depend on number of completion\n" +
+                "$help : to see that\n");
+
+            response="";
+            message.channel.send(embedResponse);
+        }
     }
     else if (tmp[0] === "setlog") {
         console.log("log set in a channel #" + message.channel.name);
@@ -140,8 +150,8 @@ function findCmd(content, message) {
     }
     else
         response = content;
-
-    message.channel.send(embed.getEmbed().addField(message.member.displayName, response));
+    if (response !== null && response !== "")
+        message.channel.send(embed.getEmbed().addField(message.member.displayName, response));
 }
 
 
