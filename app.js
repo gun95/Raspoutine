@@ -113,7 +113,8 @@ function findCmd(content, message) {
                 });
             }
             else
-                message.channel.send(embed.getEmbed().setDescription("No Player Found"));
+                message.channel.send(embed.getEmbed().setDescription("No Player Found"))
+                    .catch(console.error);
         });
     } else if (tmp[0] === "help") {
         let embedResponse = embed.getEmbed();
@@ -126,11 +127,11 @@ function findCmd(content, message) {
                 "$rank <MonBatlleTag> : Défini vos rangs en fonction du nombre de raid que vous avez fini \n" +
                 "$help : Pour voir ça\n");
 
-            response="";
-             message.channel.send(embedResponse);
+            response = "";
+            message.channel.send(embedResponse)
+                .catch(console.error);
         }
-        else
-        {
+        else {
             embedResponse.setAuthor(message.member.displayName);
             embedResponse.setDescription("My sight will stretch to the edge of this system and beyond. Never again will a threat go unsee.\n" +
                 "From this day forward, i will defend Humanity on my onw terms.\n" +
@@ -139,8 +140,9 @@ function findCmd(content, message) {
                 "$rank <yourBattleTag> : set your raid rank depend on number of completion\n" +
                 "$help : to see that\n");
 
-            response="";
-            message.channel.send(embedResponse);
+            response = "";
+            message.channel.send(embedResponse)
+                .catch(console.error);
         }
     }
     else if (tmp[0] === "setlog") {
@@ -150,8 +152,10 @@ function findCmd(content, message) {
     }
     else
         response = content;
-    if (response !== null && response !== "")
-        message.channel.send(embed.getEmbed().addField(message.member.displayName, response));
+    if (response !== null && response !== "") {
+        message.channel.send(embed.getEmbed().addField(message.member.displayName, response))
+            .catch(console.error);
+    }
 }
 
 
@@ -174,8 +178,10 @@ client.on('messageDelete', message => {
 
     if (tmp !== "")
         responseDelete.addField("reaction", tmp);
-    if (channelIdForLog !== null)
-        client.channels.get(channelIdForLog).send(responseDelete);
+    if (channelIdForLog !== null) {
+        client.channels.get(channelIdForLog).send(responseDelete)
+            .catch(console.error);
+    }
 });
 
 
@@ -197,8 +203,10 @@ client.on('messageReactionAdd', messageReaction => {
     });
     if (tmp !== "")
         responseReactionAdd.addField("reaction", tmp);
-    if (channelIdForLog !== null)
-        client.channels.get(channelIdForLog).send(responseReactionAdd);
+    if (channelIdForLog !== null) {
+        client.channels.get(channelIdForLog).send(responseReactionAdd)
+            .catch(console.error);
+    }
 });
 
 
@@ -220,10 +228,10 @@ client.on('messageReactionRemove', messageReaction => {
     });
     if (tmp !== "")
         messageReactionRemove.addField("reaction", tmp);
-    if (channelIdForLog !== null)
-
-        client.channels.get(channelIdForLog).send(messageReactionRemove);
-
+    if (channelIdForLog !== null) {
+        client.channels.get(channelIdForLog).send(messageReactionRemove)
+            .catch(console.error);
+    }
 });
 
 client.on('voiceStateUpdate', (oldMember, newMember) => {
@@ -303,8 +311,6 @@ let findRole = function (message, numberRaid, title, lvl1, lvl2, lvl3) {
         });
     } else
         responseRole.addField(title + " : " + numberRaid, "None");
-
-
 };
 
 
@@ -317,7 +323,7 @@ let nameRaid = ["LEVIATHAN Normal",
 
 let setRole = function (message, raid, bungieName) {
 
-    let y = 0
+    let y = 0;
     responseRole = embed.getEmbed();
     responseRole.addField("Player Found", bungieName);
     for (let i = 0; i < nameRaid.length; i++) {
@@ -360,5 +366,9 @@ String.prototype.splice = function (idx, rem, str) {
     return this.slice(0, idx) + str + this.slice(idx + Math.abs(rem));
 };
 
+
+client.on("error", (e) => console.error(e));
+client.on("warn", (e) => console.warn(e));
+client.on("debug", (e) => console.info(e));
 
 module.exports = app;
