@@ -261,11 +261,11 @@ client.on('voiceStateUpdate', (oldMember, newMember) => {
     if (oldUserChannel === undefined && newUserChannel !== undefined) {
         // User Joins a voice channel
         console.log(newMember.displayName + " join " + newUserChannel.name);
-        kibana.postLastConnect(newMember.displayName, newUserChannel.name, "join");
+        kibana.postLastConnect(newMember.id, newMember.displayName, newUserChannel.name, "join");
     } else if (newUserChannel === undefined) {
         // User leaves a voice channel
         console.log(oldMember.displayName + " leave " + oldUserChannel.name);
-        kibana.postLastConnect(oldMember.displayName, oldUserChannel.name, "leave");
+        kibana.postLastConnect(oldMember.id, oldMember.displayName, oldUserChannel.name, "leave");
     }
 });
 

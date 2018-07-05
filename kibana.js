@@ -21,11 +21,12 @@ let postNbConnect = function (numberConnectUser) {
     );
 };
 
-let postLastConnect = function (userName, channel, action) {
+let postLastConnect = function (id, userName, channel, action) {
 
     let document = {
         json: {
             timestamp: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
+            id: id,
             userName: userName,
             channel: channel,
             action: action
@@ -69,6 +70,9 @@ let user = {
                         "timestamp": {
                             "type": "date",
                             "format": "yyyy-MM-dd HH:mm:ss"
+                        },
+                        "id": {
+                            "type": "keyword"
                         },
                         "userName": {
                             "type": "keyword"
