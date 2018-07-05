@@ -175,6 +175,7 @@ client.on('messageDelete', message => {
 
     if (tmp !== "")
         responseDelete.addField("Attachement", tmp);
+    tmp = "";
 
     message.reactions.forEach(function (value, key, map) {
         let tmpEmot = key;
@@ -207,8 +208,10 @@ client.on('messageReactionAdd', messageReaction => {
         tmp += value.message + "\n"  + value.url + "\n";
     });
 
+
     if (tmp !== "")
         responseReactionAdd.addField("Attachement", tmp);
+    tmp = "";
 
     messageReaction.message.reactions.forEach(function (value, key, map) {
         let tmpEmot = key;
@@ -243,6 +246,7 @@ client.on('messageReactionRemove', messageReaction => {
     if (tmp !== "")
         responseReactionRemove.addField("Attachement", tmp);
 
+    tmp = "";
     messageReaction.message.reactions.forEach(function (value, key, map) {
         let tmpEmot = key;
         messageReaction.message.reactions.get(key).users.forEach(function (value, key, map) {
