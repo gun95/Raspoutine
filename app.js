@@ -169,6 +169,13 @@ client.on('messageDelete', message => {
         responseDelete.addField("Content", message.content);
 
     let tmp = "";
+    message.message.attachments.forEach(function (value, key, map) {
+        tmp += value.message + "\n"  + value.url + "\n";
+    });
+
+    if (tmp !== "")
+        responseDelete.addField("Attachement", tmp);
+
     message.reactions.forEach(function (value, key, map) {
         let tmpEmot = key;
         message.reactions.get(key).users.forEach(function (value, key, map) {
@@ -195,6 +202,14 @@ client.on('messageReactionAdd', messageReaction => {
         responseReactionAdd.addField("Content", messageReaction.message.content);
 
     let tmp = "";
+
+    messageReaction.message.attachments.forEach(function (value, key, map) {
+        tmp += value.message + "\n"  + value.url + "\n";
+    });
+
+    if (tmp !== "")
+        responseReactionAdd.addField("Attachement", tmp);
+
     messageReaction.message.reactions.forEach(function (value, key, map) {
         let tmpEmot = key;
         messageReaction.message.reactions.get(key).users.forEach(function (value, key, map) {
@@ -212,14 +227,22 @@ client.on('messageReactionAdd', messageReaction => {
 
 client.on('messageReactionRemove', messageReaction => {
 
-    let messageReactionRemove = embed.getEmbed();
-    messageReactionRemove.setAuthor("Message Reaction Remove");
-    messageReactionRemove.addField("Author", messageReaction.message.author.username);
-    messageReactionRemove.addField("Channel", messageReaction.message.channel.name);
+    let responseReactionRemove = embed.getEmbed();
+    responseReactionRemove.setAuthor("Message Reaction Remove");
+    responseReactionRemove.addField("Author", messageReaction.message.author.username);
+    responseReactionRemove.addField("Channel", messageReaction.message.channel.name);
     if (messageReaction.message.content !== "")
-        messageReactionRemove.addField("Content", messageReaction.message.content);
+        responseReactionRemove.addField("Content", messageReaction.message.content);
 
     let tmp = "";
+
+    messageReaction.message.attachments.forEach(function (value, key, map) {
+            tmp += value.message + "\n"  + value.url + "\n";
+    });
+
+    if (tmp !== "")
+        responseReactionRemove.addField("Attachement", tmp);
+
     messageReaction.message.reactions.forEach(function (value, key, map) {
         let tmpEmot = key;
         messageReaction.message.reactions.get(key).users.forEach(function (value, key, map) {
@@ -227,9 +250,9 @@ client.on('messageReactionRemove', messageReaction => {
         });
     });
     if (tmp !== "")
-        messageReactionRemove.addField("reaction", tmp);
+        responseReactionRemove.addField("reaction", tmp);
     if (channelIdForLog !== null) {
-        client.channels.get(channelIdForLog).send(messageReactionRemove)
+        client.channels.get(channelIdForLog).send(responseReactionRemove)
             .catch(console.error);
     }
 });
