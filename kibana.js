@@ -15,7 +15,7 @@ let postNbConnect = function (numberConnectUser) {
         url + "nbconnect/doc",
         document,
         function (error, response, body) {
-                console.log("postNbConnect " + body)
+                console.log("postNbConnect");
         }
 
     );
@@ -36,7 +36,7 @@ let postLastConnect = function (id, userName, channel, action) {
         url + "user/doc",
         document,
         function (error, response, body) {
-            console.log("postLastConnect " + body)
+            console.log("postLastConnect ");
         }
 
     );
