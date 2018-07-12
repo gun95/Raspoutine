@@ -60,6 +60,8 @@ let role = ["LevN LVL 1", "LevN LVL 2", "LevN LVL 3",
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
+    setChannelLog();
+
 });
 
 client.on('message', message => {
@@ -150,9 +152,16 @@ function findCmd(content, message) {
         channelIdForLog = message.channel.id;
         response = "log set in a channel #" + message.channel.name
     }
+    else if (tmp[0] === "loup") {
+        response = "";
+        let embedResponse = embed.getEmbedRuleWorlf();
+        //  console.log(embedResponse);
+        message.channel.send(embedResponse)
+            .catch(console.error);
+    }
     else
         response = content;
-    if (response !== null && response !== "") {
+    if (response !== null && response !== "" && response.length < 1024) {
         message.channel.send(embed.getEmbed().addField(message.member.displayName, response))
             .catch(console.error);
     }
@@ -385,6 +394,22 @@ String.prototype.splice = function (idx, rem, str) {
     return this.slice(0, idx) + str + this.slice(idx + Math.abs(rem));
 };
 
+
+let setChannelLog = function () {
+    client.channels.forEach(function (value, key, map) {
+        if (client.channels.get(key).name === "log")
+        {
+            channelIdForLog = key;
+            console.log("log channel id ", key);
+            if (channelIdForLog !== null) {
+                let response = embed.getEmbed();
+                response.addField("Raspoutine", "log set in a channel here");
+                client.channels.get(channelIdForLog).send(response)
+                    .catch(console.error);
+            }
+        }
+    });
+};
 
 client.on("error", (e) => console.error(e));
 client.on("warn", (e) => console.warn(e));
