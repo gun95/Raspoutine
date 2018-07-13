@@ -61,7 +61,8 @@ let role = ["LevN LVL 1", "LevN LVL 2", "LevN LVL 3",
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
     setChannelLog();
-
+    client.user.setPresence({ game: { name: 'Send Warsat to Guardian ' }, status: 'online' })
+        .catch(console.error);
 });
 
 client.on('message', message => {
