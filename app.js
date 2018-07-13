@@ -96,8 +96,13 @@ function findCmd(content, message) {
     } else if (tmp[0] === "user") {
         countUser();
         response = numberConnectUser.toString();
-    } else if (tmp[0] === "rank" && tmp.length === 2 && tmp[1] !== null) {
-        let userName = tmp[1].splice(tmp[1].search('#') + 1, 0, "23");
+    } else if (tmp[0] === "rank") {
+        let userName;
+        if (tmp.length === 2 && tmp[1] !== null)
+             userName = tmp[1].splice(tmp[1].search('#') + 1, 0, "23");
+        else
+            userName = message.member.displayName.splice(message.member.displayName.search('#') + 1, 0, "23");
+
         userName = userName.replace("#", "%");
         console.log("result = " + userName);
         response = "Searching...";
@@ -126,6 +131,7 @@ function findCmd(content, message) {
                 "A partir de maintenant, je défendrai l'Humanité à ma façon.\n" +
                 "JE SUIS RASPOUTINE,Gardien de tous ceux que j'observe. je suis sans égale.\n");
             embedResponse.addField("Mes Commandes :",
+                "$rank : Défini vos rangs en fonction du nombre de raid que vous avez fini (nom afficher dans le discord en BatlleTag)\n" +
                 "$rank <MonBatlleTag> : Défini vos rangs en fonction du nombre de raid que vous avez fini \n" +
                 "$help : Pour voir ça\n");
 
@@ -139,6 +145,7 @@ function findCmd(content, message) {
                 "From this day forward, i will defend Humanity on my onw terms.\n" +
                 "I AM RASPUTIN, Guardian of all i survey. I have no equal\n");
             embedResponse.addField("My Command :",
+                "$rank : set your raid rank depend on number of completion (Display Name in discord as BattleTag)\n" +
                 "$rank <yourBattleTag> : set your raid rank depend on number of completion\n" +
                 "$help : to see that\n");
 
@@ -161,7 +168,7 @@ function findCmd(content, message) {
     }
     else
         response = content;
-    if (response !== null && response !== "" && response.length() < 1024) {
+    if (response !== null && response !== "" && response.length < 1024) {
         message.channel.send(embed.getEmbed().addField(message.member.displayName, response))
             .catch(console.error);
     }

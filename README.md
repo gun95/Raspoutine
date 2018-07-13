@@ -55,7 +55,9 @@ You can change it at L.49 in app.js
     * Display help command\
 * rank <yourb.net>\
     * Sssigns you roles according to number of raid\
-* setlog\
+* rank
+    * Sssigns you roles according to number of raid (take discord display name)\
+ * setlog\
     * Do this in the channel where you want see log\
 * setmapping\
     * Create mapping for elasticsearch\
