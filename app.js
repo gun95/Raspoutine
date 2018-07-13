@@ -74,7 +74,7 @@ client.on('message', message => {
 function findCmd(content, message) {
     let tmp = content.split("$");
     tmp = tmp[1].split(" ");
-    let response;
+    let response = "";
     if (tmp[0] === "setnb" && tmp.length === 2 && tmp[1] !== null) {
         numberConnectUser = parseInt(tmp[1]);
         response = "NumberConnectUser set to " + numberConnectUser;
@@ -161,7 +161,7 @@ function findCmd(content, message) {
     }
     else
         response = content;
-    if (response !== null && response !== "" && response.length < 1024) {
+    if (response !== null && response !== "" && response.length() < 1024) {
         message.channel.send(embed.getEmbed().addField(message.member.displayName, response))
             .catch(console.error);
     }
@@ -313,28 +313,43 @@ let countUser = function () {
 
 let responseRole = embed.getEmbed();
 
+let removeRoleRaid = function (message) {
+    message.member.guild.roles.forEach(function (value, key, map) {
+        for (let i = 0; i < role.length; i++) {
+            if (value.name === role[i]) {
+                console.log("remove of ", value.name);
+                message.member.removeRole(key)
+                    .catch(console.error);
+            }
+        }
+    });
+};
+
+let addRoleRaid = function (message, numberRaid, title, key) {
+    message.member.addRole(message.guild.roles.get(key).id)
+        .catch(console.error);
+    responseRole.addField(title + " : " + numberRaid, message.guild.roles.get(key).name);
+};
+
 let findRole = function (message, numberRaid, title, lvl1, lvl2, lvl3) {
 
     if (numberRaid >= 30) {
         message.guild.roles.forEach(function (value, key, map) {
             if (message.guild.roles.get(key).name === lvl3) {
-                message.member.addRole(message.guild.roles.get(key).id);
-                responseRole.addField(title + " : " + numberRaid, message.guild.roles.get(key).name);
+                addRoleRaid(message, numberRaid, title, key);
             }
         });
     } else if (numberRaid >= 15 && numberRaid < 30) {
         message.guild.roles.forEach(function (value, key, map) {
             if (message.guild.roles.get(key).name === lvl2) {
-                message.member.addRole(message.guild.roles.get(key).id);
-                responseRole.addField(title + " : " + numberRaid, message.guild.roles.get(key).name);
+                addRoleRaid(message, numberRaid, title, key);
             }
         });
     }
     else if (numberRaid >= 5 && numberRaid < 15) {
         message.guild.roles.forEach(function (value, key, map) {
             if (message.guild.roles.get(key).name === lvl1) {
-                message.member.addRole(message.guild.roles.get(key).id);
-                responseRole.addField(title + " : " + numberRaid, message.guild.roles.get(key).name);
+                addRoleRaid(message, numberRaid, title, key);
             }
         });
     } else
@@ -354,6 +369,7 @@ let setRole = function (message, raid, bungieName) {
     let y = 0;
     responseRole = embed.getEmbed();
     responseRole.addField("Player Found", bungieName);
+    removeRoleRaid(message);
     for (let i = 0; i < nameRaid.length; i++) {
         findRole(message, raid[i], nameRaid[i], role[y], role[y + 1], role[y + 1]);
         y += 3;
@@ -396,9 +412,8 @@ String.prototype.splice = function (idx, rem, str) {
 
 
 let setChannelLog = function () {
-    client.channels.forEach(function (value, key, map) {
-        if (client.channels.get(key).name === "log")
-        {
+    client.user.client.channels.forEach(function (value, key, map) {
+        if (client.channels.get(key).name === "log") {
             channelIdForLog = key;
             console.log("log channel id ", key);
             if (channelIdForLog !== null) {

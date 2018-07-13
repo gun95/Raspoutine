@@ -29,7 +29,7 @@ let getEmbedRuleWorlf = function () {
         .addField("__***Méthode 1 :***__","https://docs.google.com/document/d/1jGPjFCmaD7PaFeY0JNfZoiXg1yqUJ7GPQxC_jfo6KUQ/edit")
         .addField("__***Méthode 2 :***__","https://docs.google.com/document/d/1AC-Rh78-jvvwTpuPkyXDXBXCOvAZtpt20kQFvziKdq8/edit")
         .addField("• Pour que tout reste lisible et clair dans ce canal, ne vous remercierons par avance de ne pas floodé et de supprimez vos messages après coup si jamais une conversation s'engage malgré tout.","_ _")
-        .addField("• Voici la classification pour l'expérience des membres du clan en raid :","Découverte -> N'as jamais fait le raid\nDébutant     -> Déjà fait, mais ne maitrise pas tout\nConfirmé     -> Déjà fait de nombreuse fois et maitrise la plupart des mécaniques\nExpert           -> GOD MOD ACTIVATED (Tout est maitrisé)\n\n")
+        .addField("• Voici la classification pour l'expérience des membres du clan en raid :","Découverte -> N'as jamais fait le raid\nDébutant     -> Déjà fait, mais ne maitrise pas tout\nConfirmé     -> Maitrise la plupart des mécanique\nExpert           -> GOD MOD ACTIVATED (Tout est maitrisé)\n\n")
         .addField("• Pour toute demande de découverte de raid, pour les nouveaux entre-autres, merci de laisser une réaction correspondant au raid demandé :",":thumbsup: **Calus Normal**  / :yum: **Calus Prestige**\n:smiley: **Argos**  / :wolf:  **Argos Prestige**\n:poop:  **Flèche**  / :cry:   **Flèche Prestige**");
 
     return embed;
