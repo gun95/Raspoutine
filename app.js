@@ -113,7 +113,7 @@ function findCmd(content, message) {
                 //response = "Player found = " + searchAcount.Response[0].displayName;
                 //get acount info
                 bungie.getAcount(searchAcount.Response[0].membershipId, function (acount) {
-                    console.log(acount.Response.profile.data.characterIds[0]);
+                  //  console.log(acount.Response.profile.data.characterIds[0]);
                     //get charactere activity
                     bungie.getActivityByCharactere(acount.Response.profile.data.userInfo.membershipId, acount.Response.profile.data.characterIds, function (raid) {
                         setRole(message, raid, searchAcount.Response[0].displayName);

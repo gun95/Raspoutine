@@ -54,9 +54,9 @@ You can change it at L.49 in app.js
 * help\
     * Display help command\
 * rank <yourb.net>\
-    * Sssigns you roles according to number of raid\
+    * Assigns you roles according to number of raid\
 * rank
-    * Sssigns you roles according to number of raid (take discord display name)\
+    * Assigns you roles according to number of raid (take discord display name)\
  * setlog\
     * Do this in the channel where you want see log\
 * setmapping\
