@@ -61,7 +61,7 @@ let role = ["LevN LVL 1", "LevN LVL 2", "LevN LVL 3",
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
     setChannelLog();
-    client.user.setPresence({ game: { name: 'Send Warsat to Guardian ' }, status: 'online' })
+    client.user.setPresence({game: {name: 'Send Warsat to Guardian '}, status: 'online'})
         .catch(console.error);
 });
 
@@ -100,7 +100,7 @@ function findCmd(content, message) {
     } else if (tmp[0] === "rank") {
         let userName;
         if (tmp.length === 2 && tmp[1] !== null)
-             userName = tmp[1].splice(tmp[1].search('#') + 1, 0, "23");
+            userName = tmp[1].splice(tmp[1].search('#') + 1, 0, "23");
         else
             userName = message.member.displayName.splice(message.member.displayName.search('#') + 1, 0, "23");
 
@@ -113,7 +113,7 @@ function findCmd(content, message) {
                 //response = "Player found = " + searchAcount.Response[0].displayName;
                 //get acount info
                 bungie.getAcount(searchAcount.Response[0].membershipId, function (acount) {
-                  //  console.log(acount.Response.profile.data.characterIds[0]);
+                    //  console.log(acount.Response.profile.data.characterIds[0]);
                     //get charactere activity
                     bungie.getActivityByCharactere(acount.Response.profile.data.userInfo.membershipId, acount.Response.profile.data.characterIds, function (raid) {
                         setRole(message, raid, searchAcount.Response[0].displayName);
@@ -321,20 +321,18 @@ let countUser = function () {
 
 let responseRole = embed.getEmbed();
 
-let removeRoleRaid = function (message) {
-    message.member.guild.roles.forEach(function (value, key, map) {
-        for (let i = 0; i < role.length; i++) {
-            if (value.name === role[i]) {
-                console.log("remove of ", value.name);
-                message.member.removeRole(key)
-                    .catch(console.error);
-            }
-        }
-    });
+let removeRoleRaid =  function (message, ArrayListRole) {
+    let roleToRemove = "";
+    for (let i = 0; i < ArrayListRole.length; i++)
+    {
+        roleToRemove = message.member.guild.roles.find('name', ArrayListRole[i]);
+        message.member.removeRole(roleToRemove)
+            .catch(console.error);
+    }
 };
 
 let addRoleRaid = function (message, numberRaid, title, key) {
-    message.member.addRole(message.guild.roles.get(key).id)
+     message.member.addRole(message.guild.roles.get(key).id)
         .catch(console.error);
     responseRole.addField(title + " : " + numberRaid, message.guild.roles.get(key).name);
 };
@@ -345,12 +343,14 @@ let findRole = function (message, numberRaid, title, lvl1, lvl2, lvl3) {
         message.guild.roles.forEach(function (value, key, map) {
             if (message.guild.roles.get(key).name === lvl3) {
                 addRoleRaid(message, numberRaid, title, key);
+                removeRoleRaid(message, [lvl1,lvl2])
             }
         });
     } else if (numberRaid >= 15 && numberRaid < 30) {
         message.guild.roles.forEach(function (value, key, map) {
             if (message.guild.roles.get(key).name === lvl2) {
                 addRoleRaid(message, numberRaid, title, key);
+                removeRoleRaid(message, [lvl1])
             }
         });
     }
@@ -377,14 +377,13 @@ let setRole = function (message, raid, bungieName) {
     let y = 0;
     responseRole = embed.getEmbed();
     responseRole.addField("Player Found", bungieName);
-    removeRoleRaid(message);
+
     for (let i = 0; i < nameRaid.length; i++) {
-        findRole(message, raid[i], nameRaid[i], role[y], role[y + 1], role[y + 1]);
+         findRole(message, raid[i], nameRaid[i], role[y], role[y + 1], role[y + 2]);
         y += 3;
     }
 
     message.channel.send(responseRole);
-
 };
 
 function intervalFunc() {
