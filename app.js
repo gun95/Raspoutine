@@ -169,11 +169,26 @@ function findCmd(content, message) {
     }
     else
         response = content;
-    if (response !== null && response !== "" && response.length < 1024) {
-        message.channel.send(embed.getEmbed().addField(message.member.displayName, response))
-            .catch(console.error);
+    if (response !== null && response !== "") {
+        //  message.channel.send(embed.getEmbed().addField(message.member.displayName, response)).catch(console.error);
+        message.channel.send(myAddField(embed.getEmbed(), message.member.displayName, response));
     }
 }
+
+let myAddField = function (embed, title, response) {
+    if (response.length < 1024) {
+        embed.addField(title, response);
+        return embed;
+    }
+    else {
+        let array = response.match(/[\s\S]{1,1023}/g) || [];
+        embed.addField(title, array[0]);
+        for (let i = 1; i < array.length; i++) {
+            embed.addField("_ _", array[i]);
+        }
+        return embed;
+    }
+};
 
 
 let getAttachements = function (msg) {
@@ -203,8 +218,10 @@ client.on('messageDelete', message => {
     responseDelete.addField("Author", message.member.displayName);
     responseDelete.addField("Channel", message.channel.name);
     if (message.content !== "")
-        responseDelete.addField("Content", message.content);
-
+    {
+        //responseDelete.addField("Content", message.content);
+        responseDelete = myAddField(responseDelete, "Content", message.content);
+    }
     tmp = getAttachements(message);
 
     if (tmp !== "")
@@ -229,7 +246,8 @@ client.on('messageReactionAdd', messageReaction => {
     responseReactionAdd.addField("Author", messageReaction.message.author.username);
     responseReactionAdd.addField("Channel", messageReaction.message.channel.name);
     if (messageReaction.message.content !== "")
-        responseReactionAdd.addField("Content", messageReaction.message.content);
+        //responseReactionAdd.addField("Content", messageReaction.message.content);
+        responseReactionAdd = myAddField(responseReactionAdd, "Content", message.content);
 
     tmp = getAttachements(messageReaction.message);
 
@@ -254,8 +272,8 @@ client.on('messageReactionRemove', messageReaction => {
     responseReactionRemove.addField("Author", messageReaction.message.author.username);
     responseReactionRemove.addField("Channel", messageReaction.message.channel.name);
     if (messageReaction.message.content !== "")
-        responseReactionRemove.addField("Content", messageReaction.message.content);
-
+        //responseReactionRemove.addField("Content", messageReaction.message.content);
+        responseReactionRemove = myAddField(responseReactionRemove, "Content", message.content);
     tmp = getAttachements(messageReaction.message);
     if (tmp !== "")
         responseReactionRemove.addField("Attachement", tmp);
@@ -321,10 +339,9 @@ let countUser = function () {
 
 let responseRole = embed.getEmbed();
 
-let removeRoleRaid =  function (message, ArrayListRole) {
+let removeRoleRaid = function (message, ArrayListRole) {
     let roleToRemove = "";
-    for (let i = 0; i < ArrayListRole.length; i++)
-    {
+    for (let i = 0; i < ArrayListRole.length; i++) {
         roleToRemove = message.member.guild.roles.find('name', ArrayListRole[i]);
         message.member.removeRole(roleToRemove)
             .catch(console.error);
@@ -332,7 +349,7 @@ let removeRoleRaid =  function (message, ArrayListRole) {
 };
 
 let addRoleRaid = function (message, numberRaid, title, key) {
-     message.member.addRole(message.guild.roles.get(key).id)
+    message.member.addRole(message.guild.roles.get(key).id)
         .catch(console.error);
     responseRole.addField(title + " : " + numberRaid, message.guild.roles.get(key).name);
 };
@@ -343,7 +360,7 @@ let findRole = function (message, numberRaid, title, lvl1, lvl2, lvl3) {
         message.guild.roles.forEach(function (value, key, map) {
             if (message.guild.roles.get(key).name === lvl3) {
                 addRoleRaid(message, numberRaid, title, key);
-                removeRoleRaid(message, [lvl1,lvl2])
+                removeRoleRaid(message, [lvl1, lvl2])
             }
         });
     } else if (numberRaid >= 15 && numberRaid < 30) {
@@ -379,7 +396,7 @@ let setRole = function (message, raid, bungieName) {
     responseRole.addField("Player Found", bungieName);
 
     for (let i = 0; i < nameRaid.length; i++) {
-         findRole(message, raid[i], nameRaid[i], role[y], role[y + 1], role[y + 2]);
+        findRole(message, raid[i], nameRaid[i], role[y], role[y + 1], role[y + 2]);
         y += 3;
     }
 
