@@ -247,7 +247,7 @@ client.on('messageReactionAdd', messageReaction => {
     responseReactionAdd.addField("Channel", messageReaction.message.channel.name);
     if (messageReaction.message.content !== "")
         //responseReactionAdd.addField("Content", messageReaction.message.content);
-        responseReactionAdd = myAddField(responseReactionAdd, "Content", message.content);
+        responseReactionAdd = myAddField(responseReactionAdd, "Content", messageReaction.message.content);
 
     tmp = getAttachements(messageReaction.message);
 
@@ -273,7 +273,7 @@ client.on('messageReactionRemove', messageReaction => {
     responseReactionRemove.addField("Channel", messageReaction.message.channel.name);
     if (messageReaction.message.content !== "")
         //responseReactionRemove.addField("Content", messageReaction.message.content);
-        responseReactionRemove = myAddField(responseReactionRemove, "Content", message.content);
+        responseReactionRemove = myAddField(responseReactionRemove, "Content", messageReaction.message.content);
     tmp = getAttachements(messageReaction.message);
     if (tmp !== "")
         responseReactionRemove.addField("Attachement", tmp);
