@@ -69,7 +69,14 @@ client.on('message', message => {
 
     if (message.content.startsWith(botPrefix)) {
         findCmd(message.content, message);
-    }
+    }else if (message.author.id === "296023718839451649" &&
+        (message.content.includes("has joined  LFG Post") ||
+            message.content.includes("has left  LFG Post") ||
+            message.content.includes("changed to an alternate for  LFG Post") ||
+            message.content.includes("is an alternate for  LFG Post")
+        ))
+        logCharlemagneMsgCreate(message);
+
 });
 
 function findCmd(content, message) {
@@ -214,7 +221,7 @@ let getReaction = function (msg) {
 client.on('messageDelete', message => {
     let tmp;
     let responseDelete = embed.getEmbed();
-    responseDelete.setAuthor("Delete");
+    responseDelete.setAuthor("Message Delete");
     responseDelete.addField("Author", message.member.displayName);
     responseDelete.addField("Channel", message.channel.name);
     if (message.content !== "")
@@ -237,56 +244,70 @@ client.on('messageDelete', message => {
     }
 });
 
-
 client.on('messageReactionAdd', messageReaction => {
 
-    let tmp;
-    let responseReactionAdd = embed.getEmbed();
-    responseReactionAdd.setAuthor("Message Reaction Add");
-    responseReactionAdd.addField("Author", messageReaction.message.author.username);
-    responseReactionAdd.addField("Channel", messageReaction.message.channel.name);
-    if (messageReaction.message.content !== "")
-        //responseReactionAdd.addField("Content", messageReaction.message.content);
-        responseReactionAdd = myAddField(responseReactionAdd, "Content", messageReaction.message.content);
-
-    tmp = getAttachements(messageReaction.message);
-
-    if (tmp !== "")
-        responseReactionAdd.addField("Attachement", tmp);
-
-    tmp = getReaction(messageReaction.message);
-    if (tmp !== "")
-        responseReactionAdd.addField("reaction", tmp);
-
-    if (channelIdForLog !== null) {
-        client.channels.get(channelIdForLog).send(responseReactionAdd)
-            .catch(console.error);
+    if (messageReaction.message.author.id !== "296023718839451649")
+    {
+        messageReactionLog("Add", messageReaction);
     }
 });
 
 client.on('messageReactionRemove', messageReaction => {
 
+    messageReactionLog("Remove", messageReaction);
+});
+
+let messageReactionLog = function(type, messageReaction)
+{
     let tmp;
-    let responseReactionRemove = embed.getEmbed();
-    responseReactionRemove.setAuthor("Message Reaction Remove");
-    responseReactionRemove.addField("Author", messageReaction.message.author.username);
-    responseReactionRemove.addField("Channel", messageReaction.message.channel.name);
+    let responseReaction = embed.getEmbed();
+    responseReaction.setAuthor("Message Reaction " + type);
+    responseReaction.addField("Author", messageReaction.message.author.username);
+    responseReaction.addField("Channel", messageReaction.message.channel.name);
     if (messageReaction.message.content !== "")
-        //responseReactionRemove.addField("Content", messageReaction.message.content);
-        responseReactionRemove = myAddField(responseReactionRemove, "Content", messageReaction.message.content);
+    //responseReaction.addField("Content", messageReaction.message.content);
+        responseReaction = myAddField(responseReaction, "Content", messageReaction.message.content);
     tmp = getAttachements(messageReaction.message);
     if (tmp !== "")
-        responseReactionRemove.addField("Attachement", tmp);
+        responseReaction.addField("Attachement", tmp);
 
     tmp = getReaction(messageReaction.message);
     if (tmp !== "")
-        responseReactionRemove.addField("reaction", tmp);
+        responseReaction.addField("reaction", tmp);
 
     if (channelIdForLog !== null) {
-        client.channels.get(channelIdForLog).send(responseReactionRemove)
+        client.channels.get(channelIdForLog).send(responseReaction)
             .catch(console.error);
     }
-});
+};
+
+
+
+
+let logCharlemagneMsgCreate = function(message){
+
+    let tmp;
+    let responseMessageAdd = embed.getEmbed();
+    responseMessageAdd.setAuthor("Message Reaction Remove");
+    responseMessageAdd.addField("Author", message.author.username);
+    responseMessageAdd.addField("Channel", message.channel.name);
+
+    if (message.content !== "")
+    //responseReactionRemove.addField("Content", messageReaction.message.content);
+        responseMessageAdd = myAddField(responseMessageAdd, "Content", message.content);
+    tmp = getAttachements(message);
+    if (tmp !== "")
+        responseMessageAdd.addField("Attachement", tmp);
+
+    tmp = getReaction(message);
+    if (tmp !== "")
+        responseMessageAdd.addField("reaction", tmp);
+
+    if (channelIdForLog !== null) {
+        client.channels.get(channelIdForLog).send(responseMessageAdd)
+            .catch(console.error);
+    }
+};
 
 client.on('voiceStateUpdate', (oldMember, newMember) => {
     let newUserChannel = newMember.voiceChannel;
