@@ -245,7 +245,7 @@ client.on('messageDelete', async (message) => {
         responseDelete.addField("Executor", user)
     }
 
-    responseDelete.addField("Message Author", message.member.displayName);
+    responseDelete.addField("Author", message.member.displayName);
     responseDelete.addField("Channel", message.channel.name);
 
     if (message.content !== "") {
