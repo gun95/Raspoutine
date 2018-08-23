@@ -69,7 +69,7 @@ client.on('message', message => {
 
     if (message.content.startsWith(botPrefix)) {
         findCmd(message.content, message);
-    }else if (message.author.id === "296023718839451649" &&
+    } else if (message.author.id === "296023718839451649" &&
         (message.content.includes("has joined  LFG Post") ||
             message.content.includes("has left  LFG Post") ||
             message.content.includes("changed to an alternate for  LFG Post") ||
@@ -173,6 +173,13 @@ function findCmd(content, message) {
         //  console.log(embedResponse);
         message.channel.send(embedResponse)
             .catch(console.error);
+    } else if (tmp[0] === "test") {
+        message.guild.fetchAuditLogs()
+            .then(audit => {
+                console.log(audit.entries.first().extra)
+
+            })
+            .catch(console.error);
     }
     else
         response = content;
@@ -218,14 +225,30 @@ let getReaction = function (msg) {
     return reaction;
 };
 
-client.on('messageDelete', message => {
+client.on('messageDelete', async (message) => {
+    let user = "";
     let tmp;
     let responseDelete = embed.getEmbed();
+    const audit = await message.guild.fetchAuditLogs({type: 'MESSAGE_DELETE'}).then(audit => audit.entries.first())
+
+    console.log("*************************");
+    console.log(audit);
+
     responseDelete.setAuthor("Message Delete");
-    responseDelete.addField("Author", message.member.displayName);
+
+    if (audit.extra.channel.id === message.channel.id
+        && (audit.target.id === message.author.id)
+        && (audit.createdTimestamp > (Date.now() - 5000))
+        && (audit.extra.count >= 1)) {
+        console.log("executor");
+        user = message.guild.members.find('id', audit.executor.id).displayName
+        responseDelete.addField("Executor", user)
+    }
+
+    responseDelete.addField("Message Author", message.member.displayName);
     responseDelete.addField("Channel", message.channel.name);
-    if (message.content !== "")
-    {
+
+    if (message.content !== "") {
         //responseDelete.addField("Content", message.content);
         responseDelete = myAddField(responseDelete, "Content", message.content);
     }
@@ -242,12 +265,12 @@ client.on('messageDelete', message => {
         client.channels.get(channelIdForLog).send(responseDelete)
             .catch(console.error);
     }
+
 });
 
 client.on('messageReactionAdd', messageReaction => {
 
-    if (messageReaction.message.author.id !== "296023718839451649")
-    {
+    if (messageReaction.message.author.id !== "296023718839451649") {
         messageReactionLog("Add", messageReaction);
     }
 });
@@ -257,8 +280,7 @@ client.on('messageReactionRemove', messageReaction => {
     messageReactionLog("Remove", messageReaction);
 });
 
-let messageReactionLog = function(type, messageReaction)
-{
+let messageReactionLog = function (type, messageReaction) {
     let tmp;
     let responseReaction = embed.getEmbed();
     responseReaction.setAuthor("Message Reaction " + type);
@@ -282,9 +304,7 @@ let messageReactionLog = function(type, messageReaction)
 };
 
 
-
-
-let logCharlemagneMsgCreate = function(message){
+let logCharlemagneMsgCreate = function (message) {
 
     let tmp;
     let responseMessageAdd = embed.getEmbed();
