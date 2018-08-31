@@ -7,7 +7,6 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
-const Discord = require('discord.js');
 
 
 var app = express();
@@ -25,9 +24,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-let kibana = require("./kibana.js");
-let bungie = require("./bungie.js");
-let embed = require("./embed.js");
+const Discord = require('discord.js');
+const kibana = require("./kibana.js");
+const bungie = require("./bungie.js");
+const embed = require("./embed.js");
+const cmds = require('./commands.js');
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -49,14 +51,14 @@ const client = new Discord.Client();
 const botPrefix = '$';
 let numberConnectUser = 0;
 let channelIdForLog = null;
-
+/*
 let role = ["LevN LVL 1", "LevN LVL 2", "LevN LVL 3",
     "LevP LVL 1", "LevP LVL 2", "LevP LVL 3",
     "ArgosN LVL 1", "ArgosN LVL 2", "ArgosN LVL 3",
     "ArgosP LVL 1", "ArgosP LVL 2", "ArgosP LVL 3",
     "FlecheN LVL 1", "FlecheN LVL 2", "FlecheN LVL 3",
     "FlecheP LVL 1", "FlecheP LVL 2", "FlecheP LVL 3",
-];
+];*/
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
@@ -68,7 +70,10 @@ client.on('ready', () => {
 client.on('message', message => {
 
     if (message.content.startsWith(botPrefix)) {
-        findCmd(message.content, message);
+        //findCmd(message.content, message);
+        let cmd = message.content.split(/\s+/)[0].slice(botPrefix.length).toLowerCase();
+        getCmdFunction(cmd)(message);
+
     } else if (message.author.id === "296023718839451649" &&
         (message.content.includes("has joined  LFG Post") ||
             message.content.includes("has left  LFG Post") ||
@@ -78,8 +83,21 @@ client.on('message', message => {
         logCharlemagneMsgCreate(message);
 
 });
+function getCmdFunction(cmd) {
+    const COMMANDS = {
+        'test': cmds.test,
+        'createrole' : cmds.createRole,
+        'setmapping' : cmds.setMapping,
+        'rank' : cmds.rank,
+        'help' : cmds.help,
+        'loup' : cmds.loup,
+        'setlog' : cmds.setLog,
+        'team' : cmds.team
+    };
+    return COMMANDS[cmd] ? COMMANDS[cmd] : () => {};
+}
 
-function findCmd(content, message) {
+/*function findCmd(content, message) {
     let tmp = content.split("$");
     tmp = tmp[1].split(" ");
     let response = "";
@@ -187,7 +205,7 @@ function findCmd(content, message) {
         //  message.channel.send(embed.getEmbed().addField(message.member.displayName, response)).catch(console.error);
         message.channel.send(myAddField(embed.getEmbed(), message.member.displayName, response));
     }
-}
+}*/
 
 let myAddField = function (embed, title, response) {
     if (response.length < 1024) {
@@ -231,9 +249,6 @@ client.on('messageDelete', async (message) => {
     let responseDelete = embed.getEmbed();
     const audit = await message.guild.fetchAuditLogs({type: 'MESSAGE_DELETE'}).then(audit => audit.entries.first())
 
-    console.log("*************************");
-    console.log(audit);
-
     responseDelete.setAuthor("Message Delete");
 
     if (audit.extra.channel.id === message.channel.id
@@ -245,7 +260,7 @@ client.on('messageDelete', async (message) => {
         responseDelete.addField("Executor", user)
     }
 
-    responseDelete.addField("Author", message.member.displayName);
+    responseDelete.addField("   Author", message.member.displayName);
     responseDelete.addField("Channel", message.channel.name);
 
     if (message.content !== "") {
