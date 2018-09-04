@@ -1,15 +1,15 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+let createError = require('http-errors');
+let express = require('express');
+let path = require('path');
+let cookieParser = require('cookie-parser');
+let logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+let indexRouter = require('./routes/index');
+let usersRouter = require('./routes/users');
 
 
 
-var app = express();
+let app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -63,7 +63,7 @@ let role = ["LevN LVL 1", "LevN LVL 2", "LevN LVL 3",
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
     setChannelLog();
-    client.user.setPresence({game: {name: 'Send Warsat to Guardian '}, status: 'online'})
+    client.user.setPresence({game: {name: 'Pray for Cayde-6'}, status: 'online'})
         .catch(console.error);
 });
 
