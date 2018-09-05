@@ -464,7 +464,7 @@ function intervalFunc() {
     kibana.postNbConnect(numberConnectUser);
 }
 
-setInterval(intervalFunc, 300 * 1000);
+setInterval(intervalFunc, 600 * 1000);
 client.login(process.env.token);
 
 
