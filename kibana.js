@@ -1,4 +1,4 @@
-var request = require('request');
+let request = require('request');
 
 
 let url = process.env.url;

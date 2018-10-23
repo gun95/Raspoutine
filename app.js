@@ -92,7 +92,9 @@ function getCmdFunction(cmd) {
         'help' : cmds.help,
         'loup' : cmds.loup,
         'setlog' : cmds.setLog,
-        'team' : cmds.team
+        'team' : cmds.team,
+        'time' : cmds.time,
+        'presence' : cmds.setPresence
     };
     return COMMANDS[cmd] ? COMMANDS[cmd] : () => {};
 }
@@ -510,4 +512,10 @@ client.on("error", (e) => console.error(e));
 client.on("warn", (e) => console.warn(e));
 //client.on("debug", (e) => console.info(e));
 
+let setPresence = function (title) {
+    client.user.setPresence({game: {name: title}, status: 'online'})
+        .catch(console.error);
+};
+
+module.exports.setPresence = setPresence;
 module.exports = app;

@@ -2,6 +2,8 @@
 const kibana = require("./kibana.js");
 const bungie = require("./bungie.js");
 const embed = require("./embed.js");
+const myTime = require("./myTime.js");
+const app = require("./app.js");
 
 let role = ["LevN LVL 1", "LevN LVL 2", "LevN LVL 3",
     "LevP LVL 1", "LevP LVL 2", "LevP LVL 3",
@@ -23,7 +25,9 @@ module.exports = {
     'help': help,
     'loup' : loup,
     'setLog' : setLog,
-    'team' : team
+    'team' : team,
+    'time' : time,
+    'setPresence' : setPresence
 };
 
 function test(message) {
@@ -200,6 +204,7 @@ function help(message){
     tmp = tmp[1].split(" ");
     let embedResponse = embed.getEmbed();
     if (tmp.length === 2 && tmp[1] === "fr") {
+        if (message.member.displayName != null)
         embedResponse.setAuthor(message.member.displayName);
         embedResponse.setDescription("Ma surveillance s'étendra jusqu'aux limites de ce systeme et au-delà.Plus aucune menace ne pourra nous échapper\n" +
             "A partir de maintenant, je défendrai l'Humanité à ma façon.\n" +
@@ -207,12 +212,16 @@ function help(message){
         embedResponse.addField("Mes Commandes :",
             "$rank : Défini vos rangs en fonction du nombre de raid que vous avez fini (nom afficher dans le discord en BatlleTag)\n" +
             "$rank <MonBatlleTag> : Défini vos rangs en fonction du nombre de raid que vous avez fini \n" +
-            "$help : Pour voir ça\n");
+            "$help : Pour voir ça\n" +
+            "$team <titan,warlork,hunter> : choisie ta classe préféré et montre le aux autres\n" +
+            "$time : Donne le temps present sur le discord en vocal");
+
 
         message.channel.send(embedResponse)
             .catch(console.error);
     }
     else {
+        if (message.member.displayName != null)
         embedResponse.setAuthor(message.member.displayName);
         embedResponse.setDescription("My sight will stretch to the edge of this system and beyond. Never again will a threat go unsee.\n" +
             "From this day forward, i will defend Humanity on my onw terms.\n" +
@@ -268,15 +277,46 @@ function team(message){
         }
         message.member.addRole(message.member.guild.roles.find('name', roleName))
             .catch(console.error);
-
-
-
-
         message.reply(titre).catch(console.error);
-
     }
 }
 
+
+function time(message){
+    let embedResponse = embed.getEmbed();
+    embedResponse.setAuthor(message.member.displayName);
+
+    myTime.postGetTimeSevenDay(message.member.displayName, function (totalTime) {
+
+        embedResponse.addField("Présence sur le discord c'est 7 derniers jours :", convertMinsToHrsMins(totalTime) + " heures");
+    });
+
+    myTime.postGetAllTime(message.member.displayName, function (totalTime) {
+
+        embedResponse.addField("Présence sur le discord au Total :", convertMinsToHrsMins(totalTime) + " heures");
+        message.reply(embedResponse).catch(console.error);
+    });
+
+}
+
+function convertMinsToHrsMins(mins) {
+    let h = Math.floor(mins / 60);
+    let m = mins % 60;
+    h = h < 10 ? '0' + h : h;
+    m = m < 10 ? '0' + m : m;
+    return `${h}:${m}`;
+}
+
+function setPresence(message)
+{
+    let tmp = message.content.split("$");
+    tmp = tmp[1].split("presence");
+    if (tmp.length === 2) {
+        app.setPresence(tmp[1]);
+        response = "Presence set to : " + tmp[1];
+        sendMsg(message);
+    }
+}
 
 let sendMsg = function(message){
     if (response !== null && response !== "") {
