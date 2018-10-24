@@ -78,11 +78,11 @@ let getTimeFromRequest = function (json) {
     let msMinute = 60 * 1000;
     let msDay = 60 * 60 * 24 * 1000;
     let totalTime = 0;
-
     for (let i = 0; i < json.length; i = i + 2) {
-        if (i === 0 && json[i]._source.action === "join")
+        if (i + 1 < json.length && i === 0 && json[i]._source.action === "join" )
             i++;
-        if (json[i]._source.action === "leave" && json[i + 1]._source.action === "join") {
+        console.log("i = " + i);
+        if (i + 1 < json.length && json[i]._source.action === "leave" && json[i + 1]._source.action === "join" ) {
             //console.log("i = " + json[i]._source.action + " channel = " + json[i]._source.channel);
             //console.log("i + 1 = ", json[i + 1]._source.action + " channel = " + json[i + 1]._source.channel);
 

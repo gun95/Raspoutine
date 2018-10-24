@@ -283,6 +283,8 @@ function team(message){
 
 
 function time(message){
+
+    console.log("time : " + message.member.displayName);
     let embedResponse = embed.getEmbed();
     embedResponse.setAuthor(message.member.displayName);
 
