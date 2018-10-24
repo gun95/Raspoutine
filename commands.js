@@ -288,12 +288,12 @@ function time(message){
 
     myTime.postGetTimeSevenDay(message.member.displayName, function (totalTime) {
 
-        embedResponse.addField("Présence sur le discord c'est 7 derniers jours :", convertMinsToHrsMins2(totalTime) + " heures");
+        embedResponse.addField("Présence sur le discord c'est 7 derniers jours :", convertMinsToHrsMins(totalTime) + " heures");
     });
 
     myTime.postGetAllTime(message.member.displayName, function (totalTime) {
 
-        embedResponse.addField("Présence sur le discord au Total :", convertMinsToHrsMins2(totalTime) + " heures");
+        embedResponse.addField("Présence sur le discord au Total :", convertMinsToHrsMins(totalTime) + " heures");
         message.channel.send(embedResponse)
             .catch(console.error);
     });
@@ -306,14 +306,6 @@ function convertMinsToHrsMins(mins) {
     h = h < 10 ? '0' + h : h;
     m = m < 10 ? '0' + m : m;
     return `${h}:${m}`;
-}
-
-function convertMinsToHrsMins2(mins) {
-    var h = Math.floor(mins / 60);
-    var m = mins % 60;
-    h = h < 10 ? '0' + h : h;
-    m = m < 10 ? '0' + m : m;
-    return h + ':' + m;
 }
 
 function setPresence(message)
