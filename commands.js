@@ -294,7 +294,8 @@ function time(message){
     myTime.postGetAllTime(message.member.displayName, function (totalTime) {
 
         embedResponse.addField("Présence sur le discord au Total :", convertMinsToHrsMins2(totalTime) + " heures");
-        message.reply(embedResponse).catch(console.error);
+        message.channel.send(embedResponse)
+            .catch(console.error);
     });
 
 }
