@@ -81,7 +81,6 @@ let getTimeFromRequest = function (json) {
     for (let i = 0; i < json.length; i = i + 2) {
         if (i + 1 < json.length && i === 0 && json[i]._source.action === "join" )
             i++;
-        console.log("i = " + i);
         if (i + 1 < json.length && json[i]._source.action === "leave" && json[i + 1]._source.action === "join" ) {
             //console.log("i = " + json[i]._source.action + " channel = " + json[i]._source.channel);
             //console.log("i + 1 = ", json[i + 1]._source.action + " channel = " + json[i + 1]._source.channel);
