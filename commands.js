@@ -291,12 +291,12 @@ function time(message){
         embedResponse.addField("Présence sur le discord c'est 7 derniers jours :", convertMinsToHrsMins(totalTime) + " heures");
     });
 
-    myTime.postGetAllTime(message.member.displayName, function (totalTime) {
+    /*myTime.postGetAllTime(message.member.displayName, function (totalTime) {
 
         embedResponse.addField("Présence sur le discord au Total :", convertMinsToHrsMins(totalTime) + " heures");
         message.reply(embedResponse).catch(console.error);
     });
-
+*/
 }
 
 function convertMinsToHrsMins(mins) {
