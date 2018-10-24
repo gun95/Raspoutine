@@ -37,7 +37,7 @@ let postGetTimeSevenDay = function (userName, callback) {
         url,
         document,
         function (error, response, body) {
-          //  callback(getTimeFromRequest(body.hits.hits));
+            callback(getTimeFromRequest(body.hits.hits));
         }
     );
 };
