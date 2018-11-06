@@ -8,7 +8,6 @@ let indexRouter = require('./routes/index');
 let usersRouter = require('./routes/users');
 
 
-
 let app = express();
 
 // view engine setup
@@ -74,20 +73,23 @@ client.on('message', message => {
         logCharlemagneMsgCreate(message);
 
 });
+
 function getCmdFunction(cmd) {
     const COMMANDS = {
         'test': cmds.test,
-        'createrole' : cmds.createRole,
-        'setmapping' : cmds.setMapping,
-        'rank' : cmds.rank,
-        'help' : cmds.help,
-        'loup' : cmds.loup,
-        'setlog' : cmds.setLog,
-        'team' : cmds.team,
-        'time' : cmds.time,
-        'presence' : cmds.setPresence
+        'createrole': cmds.createRole,
+        'setmapping': cmds.setMapping,
+        'rank': cmds.rank,
+        'help': cmds.help,
+        'loup': cmds.loup,
+        'setlog': cmds.setLog,
+        'team': cmds.team,
+        'time': cmds.time,
+        'presence': cmds.setPresence,
+        'alltime': cmds.allTime
     };
-    return COMMANDS[cmd] ? COMMANDS[cmd] : () => {};
+    return COMMANDS[cmd] ? COMMANDS[cmd] : () => {
+    };
 }
 
 let getAttachements = function (msg) {
@@ -308,7 +310,6 @@ let myAddField = function (embed, title, response) {
 client.on("error", (e) => console.error(e));
 client.on("warn", (e) => console.warn(e));
 //client.on("debug", (e) => console.info(e));
-
 
 
 module.exports.setPresence = setPresence;

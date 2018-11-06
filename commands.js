@@ -19,15 +19,16 @@ let channelIdForLog = null;
 
 module.exports = {
     'test': test,
-    'createRole' : createRole,
-    'setMapping' : setMapping,
-    'rank' : rank,
+    'createRole': createRole,
+    'setMapping': setMapping,
+    'rank': rank,
     'help': help,
-    'loup' : loup,
-    'setLog' : setLog,
-    'team' : team,
-    'time' : time,
-    'setPresence' : setPresence
+    'loup': loup,
+    'setLog': setLog,
+    'team': team,
+    'time': time,
+    'setPresence': setPresence,
+    'allTime': allTime
 };
 
 function test(message) {
@@ -36,6 +37,7 @@ function test(message) {
 }
 
 let response = "";
+
 function createRole(message) {
     createRoleOnServer(message, roleClass, 233, 30, 99);
     createRoleOnServer(message, role, 255, 255, 255);
@@ -199,47 +201,44 @@ let setRole = function (message, raid, bungieName) {
 };
 
 
-function help(message){
+function help(message) {
     let tmp = message.content.split("$");
     tmp = tmp[1].split(" ");
     let embedResponse = embed.getEmbed();
     if (tmp.length === 2 && tmp[1] === "fr") {
         if (message.member.displayName != null)
-        embedResponse.setAuthor(message.member.displayName);
+            embedResponse.setAuthor(message.member.displayName);
         embedResponse.setDescription("Ma surveillance s'étendra jusqu'aux limites de ce systeme et au-delà.Plus aucune menace ne pourra nous échapper\n" +
             "A partir de maintenant, je défendrai l'Humanité à ma façon.\n" +
             "JE SUIS RASPOUTINE,Gardien de tous ceux que j'observe. je suis sans égale.\n");
         embedResponse.addField("Mes Commandes :",
-            "$rank : Défini vos rangs en fonction du nombre de raid que vous avez fini (nom afficher dans le discord en BatlleTag)\n" +
-            "$rank <MonBatlleTag> : Défini vos rangs en fonction du nombre de raid que vous avez fini \n" +
             "$help : Pour voir ça\n" +
             "$team <titan,warlork,hunter> : choisie ta classe préféré et montre le aux autres\n" +
             "$time : Donne le temps present sur le discord en vocal");
-
-
         message.channel.send(embedResponse)
             .catch(console.error);
     }
     else {
         if (message.member.displayName != null)
-        embedResponse.setAuthor(message.member.displayName);
+            embedResponse.setAuthor(message.member.displayName);
         embedResponse.setDescription("My sight will stretch to the edge of this system and beyond. Never again will a threat go unsee.\n" +
             "From this day forward, i will defend Humanity on my onw terms.\n" +
             "I AM RASPUTIN, Guardian of all i survey. I have no equal\n");
         embedResponse.addField("My Command :",
-            "$rank : set your raid rank depend on number of completion (Display Name in discord as BattleTag)\n" +
-            "$rank <yourBattleTag> : set your raid rank depend on number of completion\n" +
-            "$help : to see that\n");
+            "$help : to see that\n" +
+            "$team <titan,warlork,hunter> : Choose your favorite class\n" +
+            "$time : Give time to the Discord ");
         message.channel.send(embedResponse)
             .catch(console.error);
     }
 }
- function setLog(message) {
-     console.log("log set in a channel #" + message.channel.name);
-     channelIdForLog = message.channel.id;
-     response = "log set in a channel #" + message.channel.name
+
+function setLog(message) {
+    console.log("log set in a channel #" + message.channel.name);
+    channelIdForLog = message.channel.id;
+    response = "log set in a channel #" + message.channel.name
     sendMsg(message);
- }
+}
 
 function loup(message) {
     let embedResponse = embed.getEmbedRuleWorlf();
@@ -248,7 +247,7 @@ function loup(message) {
         .catch(console.error);
 }
 
-function team(message){
+function team(message) {
     let tmp = message.content.split("$");
     tmp = tmp[1].split(" ");
     let roleName = "";
@@ -257,7 +256,7 @@ function team(message){
         switch (tmp[1]) {
             case "chasseur":
                 roleName = roleClass[0];
-                titre = "Cayde-6 serais fière de toi !" ;
+                titre = "Cayde-6 serais fière de toi !";
                 break;
             case "arcaniste" :
                 roleName = roleClass[1];
@@ -282,37 +281,55 @@ function team(message){
 }
 
 
-function time(message){
+function time(message) {
 
     console.log("time : " + message.member.displayName);
     let embedResponse = embed.getEmbed();
     embedResponse.setAuthor(message.member.displayName);
 
-    myTime.postGetTimeSevenDay(message.member.displayName, function (totalTime) {
+    myTime.postGetTimeDays(message.member.displayName, 7, function (totalTime) {
 
-        embedResponse.addField("Présence sur le discord c'est 7 derniers jours :", convertMinsToHrsMins(totalTime) + " heures");
+        embedResponse.addField("Présence sur le discord c'est 7 derniers jours :", totalTime + " heures");
         myTime.postGetAllTime(message.member.displayName, function (totalTime) {
 
-            embedResponse.addField("Présence sur le discord au Total :", convertMinsToHrsMins(totalTime) + " heures");
+            embedResponse.addField("Présence sur le discord au Total :", totalTime + " heures");
             message.channel.send(embedResponse)
                 .catch(console.error);
         });
     });
-
-
-
 }
 
-function convertMinsToHrsMins(mins) {
-    let h = Math.floor(mins / 60);
-    let m = mins % 60;
-    h = h < 10 ? '0' + h : h;
-    m = m < 10 ? '0' + m : m;
-    return `${h}:${m}`;
+function allTime(message) {
+    let days = 7;
+    let tmp = message.content.split("$");
+    tmp = tmp[1].split(" ");
+    if (tmp.length === 2) {
+        days = tmp[1];
+    }
+    myTime.postGetTimeDays("*", days, function (finalTab) {
+        let tmpTab = [];
+        let i = 0;
+
+        if (finalTab.length > 80) {
+            for (let y = 0; y < finalTab.length; y++) {
+                if (i < 80) {
+                    tmpTab.push(finalTab[y]);
+                    i++;
+                }
+                else {
+                    message.channel.send(tmpTab).catch(console.error);
+                    tmpTab = [];
+                    i = 0;
+                }
+            }
+        }
+        else
+            message.channel.send(finalTab).catch(console.error);
+
+    });
 }
 
-function setPresence(message)
-{
+function setPresence(message) {
     let tmp = message.content.split("$");
     tmp = tmp[1].split("presence");
     if (tmp.length === 2) {
@@ -322,7 +339,7 @@ function setPresence(message)
     }
 }
 
-let sendMsg = function(message){
+let sendMsg = function (message) {
     if (response !== null && response !== "") {
         message.channel.send(myAddField(embed.getEmbed(), message.member.displayName, response)).catch(console.error);
     }

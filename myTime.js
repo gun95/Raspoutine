@@ -2,7 +2,7 @@ let request = require('request');
 
 let url = "https://search-raspoutine-j3jyfnal43scwwjwo7y6p2cohi.eu-west-3.es.amazonaws.com/user/doc/_search";
 
-let postGetTimeSevenDay = function (userName, callback) {
+let postGetTimeDays = function (userName, days, callback) {
 
     let document = {
         json: {
@@ -20,7 +20,7 @@ let postGetTimeSevenDay = function (userName, callback) {
                         {
                             "range": {
                                 "timestamp": {
-                                    "gte": "now-7d/d",
+                                    "gte": "now-" + days + "d/d",
                                     "lt": "now/d"
                                 }
                             }
@@ -37,7 +37,10 @@ let postGetTimeSevenDay = function (userName, callback) {
         url,
         document,
         function (error, response, body) {
-            callback(getTimeFromRequest(body.hits.hits));
+            if (userName !== "*")
+                callback(getTimeFromRequest(body.hits.hits));
+            else
+                callback(getTimeFromRequestAllDiscord(body.hits.hits));
         }
     );
 };
@@ -69,7 +72,6 @@ let postGetAllTime = function (userName, callback) {
         document,
         function (error, response, body) {
             callback(getTimeFromRequest(body.hits.hits));
-
         }
     );
 };
@@ -79,9 +81,9 @@ let getTimeFromRequest = function (json) {
     let msDay = 60 * 60 * 24 * 1000;
     let totalTime = 0;
     for (let i = 0; i < json.length; i = i + 2) {
-        if (i + 1 < json.length && i === 0 && json[i]._source.action === "join" )
+        if (i + 1 < json.length && i === 0 && json[i]._source.action === "join")
             i++;
-        if (i + 1 < json.length && json[i]._source.action === "leave" && json[i + 1]._source.action === "join" ) {
+        if (i + 1 < json.length && json[i]._source.action === "leave" && json[i + 1]._source.action === "join") {
             //console.log("i = " + json[i]._source.action + " channel = " + json[i]._source.channel);
             //console.log("i + 1 = ", json[i + 1]._source.action + " channel = " + json[i + 1]._source.channel);
 
@@ -90,10 +92,45 @@ let getTimeFromRequest = function (json) {
             totalTime += Math.floor(((date1 - date2) % msDay) / msMinute);
         }
     }
-        return totalTime;
+    return convertMinsToHrsMins(totalTime);
 };
 
 
+let getTimeFromRequestAllDiscord = function (json) {
 
-module.exports.postGetTimeSevenDay = postGetTimeSevenDay;
+    let find = 0;
+    let tab = {};
+
+    for (let i = 0; i < json.length; i++) {
+        for (let y = 0; y < Object.keys(tab).length; y++) {
+            if (Object.keys(tab)[y] === json[i]._source.userName)
+                find = 1
+        }
+        if (find === 0)
+            tab[json[i]._source.userName] = [];
+        else
+            find = 0;
+
+        tab[json[i]._source.userName].push(json[i]);
+    }
+
+    console.log(JSON.stringify(tab));
+    let finalTab = [];
+    for (let key in tab) {
+        let value = tab[key];
+        finalTab.push(key + ";" + convertMinsToHrsMins(getTimeFromRequest(value)));
+    }
+    return finalTab;
+
+};
+
+function convertMinsToHrsMins(mins) {
+    let h = Math.floor(mins / 60);
+    let m = mins % 60;
+    h = h < 10 ? '0' + h : h;
+    m = m < 10 ? '0' + m : m;
+    return `${h}:${m}`;
+}
+
+module.exports.postGetTimeDays = postGetTimeDays;
 module.exports.postGetAllTime = postGetAllTime;
