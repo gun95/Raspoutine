@@ -290,6 +290,21 @@ let setPresence = function (title) {
 };
 
 
+let myAddField = function (embed, title, response) {
+    if (response.length < 1024) {
+        embed.addField(title, response);
+        return embed;
+    }
+    else {
+        let array = response.match(/[\s\S]{1,1023}/g) || [];
+        embed.addField(title, array[0]);
+        for (let i = 1; i < array.length; i++) {
+            embed.addField("_ _", array[i]);
+        }
+        return embed;
+    }
+};
+
 client.on("error", (e) => console.error(e));
 client.on("warn", (e) => console.warn(e));
 //client.on("debug", (e) => console.info(e));
