@@ -118,11 +118,20 @@ let getTimeFromRequestAllDiscord = function (json) {
     let finalTab = [];
     for (let key in tab) {
         let value = tab[key];
-        finalTab.push(key + ";" + convertMinsToHrsMins(getTimeFromRequest(value)));
+        finalTab.push(key + ";" + getTimeFromRequest(value));
     }
-    return finalTab;
+
+    return finalTab.sort();
 
 };
+
+// sort on key values
+function keysrt(key,desc) {
+    return function(a,b){
+        return desc ? ~~(a[key] < b[key]) : ~~(a[key] > b[key]);
+    }
+}
+
 
 function convertMinsToHrsMins(mins) {
     let h = Math.floor(mins / 60);
