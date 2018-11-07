@@ -53,7 +53,7 @@ let channelIdForLog = null;
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
     setChannelLog();
-    client.user.setPresence({game: {name: 'Pray for Cayde-6'}, status: 'online'})
+    client.user.setPresence({game: {name: 'Steals all the 1000 voice'}, status: 'online'})
         .catch(console.error);
 });
 
