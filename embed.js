@@ -26,11 +26,11 @@ let getEmbedRuleWorlf = function () {
         .setTimestamp()
         .setTitle("Règle 🐺appel-des-loups🐺")
         .setDescription("Bienvenue sur l'appel des loups, l'unique canal pour organiser la vie du clan via les activités en jeu, pour ce faire vous pouvez utilisez deux méthodes, voici leurs mode d'emploi :")
-        .addField("__***Méthode 1 :***__","https://docs.google.com/document/d/1jGPjFCmaD7PaFeY0JNfZoiXg1yqUJ7GPQxC_jfo6KUQ/edit")
-        .addField("__***Méthode 2 :***__","https://docs.google.com/document/d/1AC-Rh78-jvvwTpuPkyXDXBXCOvAZtpt20kQFvziKdq8/edit")
+        .addField("__***Méthode 1 :***__","https://docs.google.com/document/d/14NBGpRwYzCdCVPhAQ-LRDFRidC9qtXydHi_W3zAGU9o/edit")
+        .addField("__***Méthode 2 :***__","https://docs.google.com/document/d/1SbwtUYcFTAI5wNfFszb6UncqgTRIEWKYNgGV6mN_qqE/edit")
         .addField("• Pour que tout reste lisible et clair dans ce canal, nous vous remercierons par avance de ne pas floodé et de supprimez vos messages après coup si jamais une conversation s'engage malgré tout.","_ _")
-        .addField("• Voici la classification pour l'expérience des membres du clan en raid :","Découverte -> N'as jamais fait le raid\nDébutant     -> Déjà fait, mais ne maitrise pas tout\nConfirmé     -> Maitrise la plupart des mécanique\nExpert           -> GOD MOD ACTIVATED (Tout est maitrisé)\n\n")
-        .addField("• Pour toute demande de découverte de raid, pour les nouveaux entre-autres, merci de laisser une réaction correspondant au raid demandé :",":thumbsup: **Calus Normal**  / :yum: **Calus Prestige**\n:smiley: **Argos**  / :wolf:  **Argos Prestige**\n:poop:  **Flèche**  / :cry:   **Flèche Prestige**");
+        .addField("• Voici la classification pour l'expérience des membres du clan en raid :","Découverte -> N'as jamais fait le raid\nDébutant     -> Déjà fait, mais ne maitrise pas tout\nConfirmé     -> Maitrise la plupart des mécanique\nExpert           -> GOD MOD ACTIVATED (Tout est maitrisé)\n\n");
+      //  .addField("• Pour toute demande de découverte de raid, pour les nouveaux entre-autres, merci de laisser une réaction correspondant au raid demandé :",":thumbsup: **Calus Normal**  / :yum: **Calus Prestige**\n:smiley: **Argos**  / :wolf:  **Argos Prestige**\n:poop:  **Flèche**  / :cry:   **Flèche Prestige**");
 
     return embed;
 };
