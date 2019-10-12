@@ -63,3 +63,17 @@ You can change it at L.49 in app.js
     * Create mapping for elasticsearch
 * user
     * Display the number of player connect
+    
+## Backup
+
+------
+```javascript
+npm install -g elasticdump
+
+elasticdump --input=http://127.0.0.1:9200/user --output=https://search-raspoutine-vmx673uwzwxe2xus732jf22tzy.eu-west-3.es.amazonaws.com/user --type=mapping
+elasticdump --limit=10000 --input=http://127.0.0.1:9200/user --output=https://search-raspoutine-vmx673uwzwxe2xus732jf22tzy.eu-west-3.es.amazonaws.com/user --type=data
+
+elasticdump --input=http://127.0.0.1:9200/nbconnect --output=https://search-raspoutine-vmx673uwzwxe2xus732jf22tzy.eu-west-3.es.amazonaws.com/nbconnect --type=mapping
+elasticdump --limit=10000 --input=http://127.0.0.1:9200/nbconnect --output=https://search-raspoutine-vmx673uwzwxe2xus732jf22tzy.eu-west-3.es.amazonaws.com/nbconnect --type=data
+
+```

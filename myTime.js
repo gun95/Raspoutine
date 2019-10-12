@@ -1,6 +1,6 @@
 let request = require('request');
 
-let url = "https://search-raspoutine-j3jyfnal43scwwjwo7y6p2cohi.eu-west-3.es.amazonaws.com/user/doc/_search";
+let url = process.env.kibana + "/user/doc/_search";
 
 let postGetTimeDays = function (userName, days, callback) {
 
