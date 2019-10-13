@@ -12,10 +12,10 @@ let postNbConnect = function (numberConnectUser) {
         }
     };
     request.post(
-        url + "nbconnect/doc",
+        url + "nbconnect/_doc",
         document,
         function (error, response, body) {
-                console.log("postNbConnect");
+                console.log("postNbConnect : ", body);
         }
 
     );
@@ -33,10 +33,11 @@ let postLastConnect = function (id, userName, channel, action) {
         }
     };
     request.post(
-        url + "user/doc",
+        url + "user/_doc",
         document,
         function (error, response, body) {
-            console.log("postLastConnect ");
+            console.log("postLastConnect : ", body);
+
         }
 
     );

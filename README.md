@@ -70,10 +70,21 @@ You can change it at L.49 in app.js
 ```javascript
 npm install -g elasticdump
 
-elasticdump --input=http://127.0.0.1:9200/user --output=https://search-raspoutine-vmx673uwzwxe2xus732jf22tzy.eu-west-3.es.amazonaws.com/user --type=mapping
-elasticdump --limit=10000 --input=http://127.0.0.1:9200/user --output=https://search-raspoutine-vmx673uwzwxe2xus732jf22tzy.eu-west-3.es.amazonaws.com/user --type=data
+elasticdump --input=http://127.0.0.1:9200/user --output=https://XXXXXXXXXXXXXXXXXXX.amazonaws.com/user --type=mapping
+elasticdump --limit=10000 --input=http://127.0.0.1:9200/user --output=https://XXXXXXXXXXXXXXXXXXX.amazonaws.com/user --type=data
 
-elasticdump --input=http://127.0.0.1:9200/nbconnect --output=https://search-raspoutine-vmx673uwzwxe2xus732jf22tzy.eu-west-3.es.amazonaws.com/nbconnect --type=mapping
-elasticdump --limit=10000 --input=http://127.0.0.1:9200/nbconnect --output=https://search-raspoutine-vmx673uwzwxe2xus732jf22tzy.eu-west-3.es.amazonaws.com/nbconnect --type=data
+elasticdump --input=http://127.0.0.1:9200/nbconnect --output=https://XXXXXXXXXXXXXXXXXXX.amazonaws.com/nbconnect --type=mapping
+elasticdump --limit=10000 --input=http://127.0.0.1:9200/nbconnect --output=https://XXXXXXXXXXXXXXXXXXX.amazonaws.com/nbconnect --type=data
 
 ```
+## Prod
+
+use pm2 in production
+
+npm install pm2 -g
+
+pm2 start app.js
+
+## Dev
+
+pm2 start app.js --watch

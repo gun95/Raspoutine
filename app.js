@@ -52,6 +52,9 @@ let channelIdForLog = null;
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
+    console.log("token : ", process.env.token)
+    console.log("url : ", process.env.url)
+
     setChannelLog();
     client.user.setPresence({game: {name: 'Solving puzzle in Niobe Labs'}, status: 'online'})
         .catch(console.error);
