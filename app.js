@@ -56,7 +56,7 @@ client.on('ready', () => {
     console.log("url : ", process.env.url)
 
     setChannelLog();
-    client.user.setPresence({game: {name: 'I AM BACK'}, status: 'online'})
+    client.user.setPresence({game: {name: 'Torturer DrL4CO'}, status: 'online'})
         .catch(console.error);
 });
 
