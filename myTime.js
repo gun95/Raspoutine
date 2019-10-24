@@ -1,13 +1,15 @@
 let request = require('request');
+var moment = require('moment');
 
-let url = process.env.kibana + "/user/doc/_search";
+
+let url = process.env.url + "/user/_doc/_search";
 
 let postGetTimeDays = function (userName, days, callback) {
 
     let document = {
         json: {
             "from": 0,
-            "size": 2000,
+            "size": 10000,
             "query": {
                 "bool": {
                     "must": [
@@ -49,7 +51,7 @@ let postGetAllTime = function (userName, callback) {
     let document = {
         json: {
             "from": 0,
-            "size": 5000,
+            "size": 10000,
             "query": {
                 "bool": {
                     "must": [
@@ -76,20 +78,25 @@ let postGetAllTime = function (userName, callback) {
     );
 };
 
+
 let getTimeFromRequest = function (json) {
-    let msMinute = 60 * 1000;
-    let msDay = 60 * 60 * 24 * 1000;
     let totalTime = 0;
     for (let i = 0; i < json.length; i = i + 2) {
+        //skip if people are actually on the server
         if (i + 1 < json.length && i === 0 && json[i]._source.action === "join")
             i++;
         if (i + 1 < json.length && json[i]._source.action === "leave" && json[i + 1]._source.action === "join") {
-            //console.log("i = " + json[i]._source.action + " channel = " + json[i]._source.channel);
+            //console.log("i = ",i , " : " , json[i]._source.action + " channel = " + json[i]._source.channel);
             //console.log("i + 1 = ", json[i + 1]._source.action + " channel = " + json[i + 1]._source.channel);
 
-            let date1 = new Date(json[i]._source.timestamp);
-            let date2 = new Date(json[i + 1]._source.timestamp);
-            totalTime += Math.floor(((date1 - date2) % msDay) / msMinute);
+            let date1 = moment(json[i]._source.timestamp)
+            let date2 = moment(json[i + 1]._source.timestamp)
+            var duration = moment.duration(date1.diff(date2));
+            var min = duration.asMinutes();
+            totalTime += Math.round(min)
+            //console.log(date1)
+            //console.log(date2)
+            //console.log(Math.round(min))
         }
     }
     return convertMinsToHrsMins(totalTime);
@@ -114,7 +121,7 @@ let getTimeFromRequestAllDiscord = function (json) {
         tab[json[i]._source.userName].push(json[i]);
     }
 
-    console.log(JSON.stringify(tab));
+    //console.log(JSON.stringify(tab));
     let finalTab = [];
     for (let key in tab) {
         let value = tab[key];
@@ -124,14 +131,6 @@ let getTimeFromRequestAllDiscord = function (json) {
     return finalTab.sort();
 
 };
-
-// sort on key values
-function keysrt(key,desc) {
-    return function(a,b){
-        return desc ? ~~(a[key] < b[key]) : ~~(a[key] > b[key]);
-    }
-}
-
 
 function convertMinsToHrsMins(mins) {
     let h = Math.floor(mins / 60);
@@ -143,3 +142,6 @@ function convertMinsToHrsMins(mins) {
 
 module.exports.postGetTimeDays = postGetTimeDays;
 module.exports.postGetAllTime = postGetAllTime;
+
+module.exports.getTimeFromRequest = getTimeFromRequest;
+module.exports.getTimeFromRequestAllDiscord = getTimeFromRequestAllDiscord;
