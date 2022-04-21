@@ -40,7 +40,7 @@ If you want use $rank do this
 $createrole 
 This create some role in discord server
 
-You can have log of your discord server if you create a text channel named "log"
+You can have log of your discord server if you create a text channel named "log" ($setLog disable)
 
 ## Command list
 

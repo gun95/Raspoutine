@@ -5,6 +5,8 @@ const embed = require("./embed.js");
 const myTime = require("./myTime.js");
 const app = require("./app.js");
 
+const client = app.client;
+
 let role = ["LevN LVL 1", "LevN LVL 2", "LevN LVL 3",
     "LevP LVL 1", "LevP LVL 2", "LevP LVL 3",
     "ArgosN LVL 1", "ArgosN LVL 2", "ArgosN LVL 3",
@@ -282,21 +284,42 @@ function team(message) {
 
 
 function time(message) {
+    let id = null;
+    let tmp = message.content.split("$");
+    tmp = tmp[1].split(" ");
+    if (tmp.length === 2) {
+//        id = tmp[1];
 
-    console.log("time : " + message.member.displayName);
+        //console.log("log channel id ", message.guild.client.users.get(message.member.id).username);
+        //console.log("log channel id ", message.guild.client.users.get(message.member.id).username);
+
+
+        //id = message.member.id;
+        message.guild.client.users.forEach(function (value, key, map) {
+            if (message.guild.client.users.get(key) === id) {
+                console.log("log channel id ", key);
+                console.log("log channel id ", value);
+
+            }
+        });
+    }
+    else
+        id = message.member.id;
+
+   /* console.log("time : " + message.member.displayName);
     let embedResponse = embed.getEmbed();
     embedResponse.setAuthor(message.member.displayName);
 
-    myTime.postGetTimeDays(message.member.displayName, 7, function (totalTime) {
+    myTime.postGetTimeDays(id, 7, function (totalTime) {
 
         embedResponse.addField("Présence sur le discord c'est 7 derniers jours :", totalTime + " heures");
-        myTime.postGetAllTime(message.member.displayName, function (totalTime) {
+        myTime.postGetAllTime(id, function (totalTime) {
 
             embedResponse.addField("Présence sur le discord au Total :", totalTime + " heures");
             message.channel.send(embedResponse)
                 .catch(console.error);
         });
-    });
+    });*/
 }
 
 function allTime(message) {

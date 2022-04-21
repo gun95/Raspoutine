@@ -317,10 +317,9 @@ client.on("warn", (e) => console.warn(e));
 //var json =
 
 
-
-
 //console.log("time = ", myTime.getTimeFromRequest(json));
 //console.log("time all : ", myTime.getTimeFromRequestAllDiscord(json));
 
+module.exports.client = client;
 module.exports.setPresence = setPresence;
 module.exports = app;
